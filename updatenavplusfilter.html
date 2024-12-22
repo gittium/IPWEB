@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <title>CSIT Job Board</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background-color: #4B0082;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            height: 30px;
+        }
+
+        .header-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .banner {
+            width: 100%;
+            position: relative;
+            background-color: #f8f8f8;
+            padding: 20px 0;
+            overflow: hidden;
+        }
+
+        .banner-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .banner img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .banner-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .banner-nav.prev { left: 10px; }
+        .banner-nav.next { right: 10px; }
+
+        /* Navigation Styles */
+        .navbar {
+            background-color: #FF6F00;
+            padding: 10px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-expanded {
+            background-color: #FF6F00;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .nav-expanded.show {
+            max-height: 500px;
+        }
+
+        .expanded-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .expanded-item {
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            padding: 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .expanded-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin: 30px 0 20px;
+        }
+
+        .section-title h2 {
+            color: #4B0082;
+            margin-right: 10px;
+        }
+
+        .section-title span {
+            color: #FF6F00;
+        }
+
+        .job-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .job-image {
+            width: 100%;
+            height: 200px;
+            background-color: #f0f0f0;
+        }
+
+        .job-info {
+            padding: 15px;
+        }
+
+        .job-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .job-author {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .footer {
+            background-color: #4B0082;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        .footer img {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Filter Sidebar Styles */
+        .filter-button {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #FF6F00;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            z-index: 1000;
+            transition: left 0.3s;
+        }
+
+        .filter-button.active {
+            left: 320px;
+        }
+
+        .filter-sidebar {
+            position: fixed;
+            left: -320px;
+            top: 0;
+            width: 320px;
+            height: 100vh;
+            background-color: #FF6F00;
+            padding: 20px;
+            z-index: 999;
+            transition: left 0.3s;
+            overflow-y: auto;
+        }
+
+        .filter-sidebar.show {
+            left: 0;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .filter-section h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-chip {
+            background-color: white;
+            color: #FF6F00;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+        }
+
+        .filter-chip:hover {
+            background-color: #f0f0f0;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .filter-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .reset-button {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+        }
+
+        .apply-button {
+            background-color: white;
+            color: #FF6F00;
+        }
+
+        /* Adjust main content when filter is open */
+        .content-wrapper {
+            transition: margin-left 0.3s;
+        }
+
+        .content-wrapper.shifted {
+            margin-left: 320px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="/api/placeholder/120/30" alt="Naresuan University" class="header-logo">
+        <div class="header-links">
+            <a href="#">เกี่ยวกับเรา</a>
+            <a href="#">ช่วยเหลือ</a>
+            <a href="#">ออกจากระบบ</a>
+        </div>
+    </header>
+
+    <div class="banner">
+        <div class="banner-content">
+            <img src="/api/placeholder/1200/300" alt="Banner">
+            <button class="banner-nav prev">←</button>
+            <button class="banner-nav next">→</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-item">
+                <i class="bi bi-house"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-person"></i>
+                <span>Teaching Assistant</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-people"></i>
+                <span>Research Assistant</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i><i class="bi bi-laptop"></i></i>
+                <span>Web Development</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="bi bi-pencil"></i>
+                <span>Graphic design</span>
+            </a>
+            <a href="#" class="nav-item" onclick="toggleExpanded(event)">
+                <i>•••</i>
+                <span>Other</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="nav-expanded" id="expandedNav">
+        <div class="expanded-container">
+            <a href="#" class="expanded-item"><i class="bi bi-window-dock"></i><br><br>UX/UI</a>
+            <a href="#" class="expanded-item"><i class="bi bi-bar-chart"></i><br><br>Data Science & AI</a>
+            <a href="#" class="expanded-item"><i class="bi bi-browser-chrome"></i><br><br>Website Scraping</a>
+            <a href="#" class="expanded-item"><i class="bi bi-controller"></i><br><br>Game Development</a>
+            <a href="#" class="expanded-item"><i class="bi bi-robot"></i><br><br>IoT Project</a>
+            <a href="#" class="expanded-item"><i class="bi bi-wrench"></i><br><br>IT Solution and Support</a>
+            <a href="#" class="expanded-item"><i class="bi bi-pc-display"></i><br><br>Desktop Application</a>
+            <a href="#" class="expanded-item"><i class="bi bi-phone"></i><br><br>Mobile Application</a>
+            <a href="#" class="expanded-item"><i class="bi bi-chat-right-text"></i><br><br>Chatbot</a>
+            <a href="#" class="expanded-item"><i class="bi bi-file-earmark-bar-graph"></i><br><br>Data Engineering</a>
+            <a href="#" class="expanded-item"><i class="bi bi-database-fill"></i><br><br>Data Labelling</a>
+            <a href="#" class="expanded-item"><i class="bi bi-wordpress"></i><br><br>Wordpress</a>
+            <a href="#" class="expanded-item"><i class="bi bi-search"></i><br><br>Quality Assurance</a>
+        </div>
+    </div>
+    <button id="filterButton" class="filter-button" onclick="toggleFilter()">
+        <i>🔍</i>
+    </button>
+
+    <div id="filterSidebar" class="filter-sidebar">
+        <button class="close-button" onclick="toggleFilter()">×</button>
+
+        <div class="filter-section">
+            <h3>ประเภทงาน</h3>
+            <div class="filter-options">
+                <button class="filter-chip">Teaching Assistant</button>
+                <button class="filter-chip">Research Assistant</button>
+                <button class="filter-chip">Web Development</button>
+                <button class="filter-chip">Graphic design</button>
+                <button class="filter-chip">Mobile Application</button>
+                <button class="filter-chip">UX/UI</button>
+                <button class="filter-chip">Data Science & AI</button>
+                <button class="filter-chip">Website Scraping</button>
+                <button class="filter-chip">Game Development</button>
+                <button class="filter-chip">IoT Project</button>
+                <button class="filter-chip">IT Solution and Support</button>
+                <button class="filter-chip">Desktop Application</button>
+                <button class="filter-chip">Chatbot</button>
+                <button class="filter-chip">Data Engineering</button>
+                <button class="filter-chip">Data Labeling</button>
+                <button class="filter-chip">Wordpress</button>
+                <button class="filter-chip">Quality Assurance</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>ผลตอบแทน</h3>
+            <div class="filter-options">
+                <button class="filter-chip">เงิน</button>
+                <button class="filter-chip">ชั่วโมงประสบการณ์</button>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>ระยะเวลาโพส</h3>
+            <div class="filter-options">
+                <button class="filter-chip">ใหม่-เก่า</button>
+                <button class="filter-chip">เก่า-ใหม่</button>
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="reset-button">รีเซ็ต</button>
+            <button class="apply-button">ตกลง</button>
+        </div>
+    </div>
+    <div id="contentWrapper" class="content-wrapper"></div>
+    <main class="main-content">
+        <div class="section-title">
+            <h2>Teaching Assistant</h2>
+            <span>ดูข้อมูล</span>
+        </div>
+        <div class="job-grid">
+            <div class="job-card">
+                <div class="job-image"></div>
+                <div class="job-info">
+                    <div class="job-title">Teaching Assistant</div>
+                    <div class="job-author">อาจารย์</div>
+                </div>
+            </div>
+            <!-- Repeat for other cards -->
+        </div>
+
+        <div class="section-title">
+            <h2>Research Assistant</h2>
+            <span>ดูข้อมูล</span>
+        </div>
+        <div class="job-grid">
+            <div class="job-card">
+                <div class="job-image"></div>
+                <div class="job-info">
+                    <div class="job-title">Graphic design</div>
+                    <div class="job-author">อาจารย์</div>
+                </div>
+            </div>
+            <!-- Repeat for other cards -->
+        </div>
+
+        <div class="section-title">
+            <h2>Web Development</h2>
+            <span>ดูข้อมูล</span>
+        </div>
+        <div class="job-grid">
+            <div class="job-card">
+                <div class="job-image"></div>
+                <div class="job-info">
+                    <div class="job-title">Web Development</div>
+                    <div class="job-author">อาจารย์</div>
+                </div>
+            </div>
+            <!-- Repeat for other cards -->
+        </div>
+    </main>
+    </div>
+
+    <footer class="footer">
+        <img src="/api/placeholder/200/50" alt="CSIT Logo">
+    </footer>
+
+    <script>
+        function toggleExpanded(event) {
+            event.preventDefault();
+            const expandedNav = document.getElementById('expandedNav');
+            expandedNav.classList.toggle('show');
+        }
+
+        function toggleFilter() {
+            const sidebar = document.getElementById('filterSidebar');
+            const filterButton = document.getElementById('filterButton');
+            const contentWrapper = document.getElementById('contentWrapper');
+            
+            sidebar.classList.toggle('show');
+            filterButton.classList.toggle('active');
+            contentWrapper.classList.toggle('shifted');
+        }
+
+        // Optional: Close filter when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('filterSidebar');
+            const filterButton = document.getElementById('filterButton');
+            
+            if (!sidebar.contains(event.target) && 
+                !filterButton.contains(event.target) && 
+                sidebar.classList.contains('show')) {
+                toggleFilter();
+            }
+        });
+    </script>
+</body>
+</html>
