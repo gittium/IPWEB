@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews & Ratings</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --purple: #4B0082;
+            --orange: #FF6B00;
+            --light-bg: #F9F9F9;
+            --white: #FFFFFF;
+            --text-dark: #333333;
+            --text-gray: #666666;
+            --star-color: #FFCC00;
+            --border-color: #E2E8F0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: var(--white);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 200vh;
+        }
+
+        /* Header */
+        .header {
+            background-color: var(--purple);
+            color: var(--white);
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .header .page-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .review-head {
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            /* จัดให้อยู่ตรงกลางแนวตั้ง */
+            gap: 10px;
+            /* ระยะห่างระหว่างไอคอนกับข้อความ */
+            padding: 10px;
+            width: 100%;
+            /* ยืดเต็มความกว้างของหน้าจอ */
+            background-color: #ffffff;
+            /* พื้นหลังสีขาว */
+            border-radius: 8px;
+            /* มุมมน */
+            /* เพิ่มเงา */
+            margin-bottom: 25px;
+            padding-left: 20px;
+
+        }
+
+        .review-head i {
+            font-size: 24px;
+            /* ขนาดไอคอน */
+            color: #333;
+            /* สีของไอคอน */
+        }
+
+        .review-head-text {
+            font-size: 20px;
+            /* ขนาดตัวอักษร */
+            font-weight: bold;
+            color: #333;
+            /* สีของข้อความ */
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            /* จัดให้อยู่ในแนวตั้ง */
+            align-items: flex-start;
+            /* จัดข้อความชิดซ้าย */
+            gap: 5px;
+            /* ระยะห่างระหว่างบรรทัด */
+            padding-left: 5px;
+        }
+
+        .user-details span:first-child {
+            font-weight: bold;
+            /* เน้นข้อความตัวแรก */
+            font-size: 1.1rem;
+            /* ปรับขนาดให้ใหญ่ขึ้น */
+            color: #333;
+            /* สีข้อความ */
+        }
+
+        .user-details span:last-child {
+            color: #666;
+            /* สีข้อความตัวที่สอง */
+            font-size: 0.9rem;
+            /* ปรับขนาดเล็กลง */
+            line-height: 1.4;
+            /* เพิ่มระยะระหว่างบรรทัด */
+        }
+
+        .content {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            gap: 20px;
+            padding: 15px
+        }
+
+        /* Reviews Section */
+        .container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .review-card {
+            display: flex;
+            align-items: center;
+            background-color: rgba(217, 217, 217, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-right: auto;
+        }
+
+        .user-icon {
+            width: 50px;
+            /* กำหนดความกว้าง */
+            height: 50px;
+            /* กำหนดความสูง */
+            border-radius: 50%;
+            /* ทำให้เป็นวงกลม */
+            display: flex;
+            /* ใช้ Flexbox เพื่อจัดข้อความในวงกลม */
+            justify-content: center;
+            /* จัดให้อยู่กึ่งกลางแนวนอน */
+            align-items: center;
+            /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+            font-size: 24px;
+            /* ขนาดอักษร */
+            color: white;
+            /* สีข้อความ */
+        }
+
+        .user-details span:first-child {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .review-score {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--star-color);
+        }
+
+        /* Summary Section */
+        /* วงกลมคะแนนเฉลี่่ย */
+        .bg-sumary {
+            background-color: #FFE88C;
+            /* สีเหลือง */
+            border-radius: 50%;
+            /* ทำให้เป็นวงกลม */
+            width: 150px;
+            /* กำหนดความกว้าง */
+            height: 150px;
+            /* กำหนดความสูง */
+            display: flex;
+            /* ใช้ Flexbox */
+            flex-direction: column;
+            /* จัดองค์ประกอบในแนวตั้ง */
+            justify-content: center;
+            /* จัดให้อยู่กลางในแนวตั้ง */
+            align-items: center;
+            /* จัดให้อยู่กลางในแนวนอน */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* เพิ่มเงา */
+            text-align: center;
+            font-family: Arial, sans-serif;
+            /* ฟอนต์ */
+        }
+
+        .summary {
+            width: 30%;
+            background-color: #fff;
+            padding: 20px;
+            /* คงระยะห่างภายใน */
+            border-radius: 8px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            /* จัดให้เนื้อหาเริ่มต้นที่ขอบบน */
+            align-items: center;
+            margin-top: 0;
+            /* ไม่มีระยะห่างจากด้านบน */
+        }
+
+        .summary h4 {
+            margin-bottom: 15px;
+        }
+
+        .bi-star-fill {
+            color: #FFCC00;
+        }
+
+        .graystar {
+            color: #E7E0EC;
+        }
+
+        .summary .average {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--star-color);
+            margin: 10px 0;
+        }
+
+        .summary .stars {
+            margin-bottom: 20px;
+        }
+
+        .stars i {
+            color: var(--star-color);
+            font-size: 1.5rem;
+        }
+
+        .breakdown {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .breakdown div {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <h1 class="page-title">รีวิวจากอาจารย์</h1>
+    </header>
+    <nav class="review-head">
+        <i class="bi bi-chevron-left"></i>
+        <h1 class="review-head-text">Review</h1>
+    </nav>
+    <div class="content">
+        <!-- Reviews Section -->
+        <!--ส่วนเนื้อหารีวิว-->
+        <div class="container">
+            <div class="review-card">
+                <div class="user-info">
+                    <div class="user-icon">👤</div>
+                    <div class="user-details">
+                        <span>Anonymous</span>
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos, in!</span>
+                    </div>
+                </div>
+                <div class="review-score">★ 5.0</div>
+            </div>
+
+            <div class="review-card">
+                <div class="user-info">
+                    <div class="user-icon">👤</div>
+                    <div class="user-details">
+                        <span>Anonymous</span>
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos, in!</span>
+                    </div>
+                </div>
+                <div class="review-score">★ 4.0</div>
+            </div>
+            <div class="review-card">
+                <div class="user-info">
+                    <div class="user-icon">👤</div>
+                    <div class="user-details">
+                        <span>Anonymous</span>
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos, in!</span>
+                    </div>
+                </div>
+                <div class="review-score">★ 3.0</div>
+            </div>
+            <div class="review-card">
+                <div class="user-info">
+                    <div class="user-icon">👤</div>
+                    <div class="user-details">
+                        <span>Anonymous</span>
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos, in!</span>
+                    </div>
+                </div>
+                <div class="review-score">★ 5.0</div>
+            </div>
+            <div class="review-card">
+                <div class="user-info">
+                    <div class="user-icon">👤</div>
+                    <div class="user-details">
+                        <span>Anonymous</span>
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos, in!</span>
+                    </div>
+                </div>
+                <div class="review-score">★ 4.0</div>
+            </div>
+            <div class="review-card">
+                <div class="user-info">
+                    <div class="user-icon">👤</div>
+                    <div class="user-details">
+                        <span>Anonymous</span>
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dignissimos, in!</span>
+                    </div>
+                </div>
+                <div class="review-score">★ 3.0</div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <!--ส่วนรีวิวรวม-->
+        <div class="summary">
+            <h4>รีวิววจากอาจารย์ (6)</h4>
+            <div class="bg-sumary">
+                <div class="average">4.0</div>
+                <div class="fullscore">จาก 5</div>
+            </div>
+            <div class="breakdown">
+                <div>
+                    <span><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                            class="bi bi-star-fill"></i></span>
+                    <div class="bar">
+                        <div class="fill" style="width: 33%;"></div>
+                    </div>
+                    <span>(2)</span>
+                </div>
+                <div>
+                    <span><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                            class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                            class="bi bi-star-fill graystar"></i></span>
+                    <div class="bar">
+                        <div class="fill" style="width: 33%;"></div>
+                    </div>
+                    <span>(2)</span>
+                </div>
+                <div>
+                    <span><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                            class="bi bi-star-fill"></i><i class="bi bi-star-fill graystar"></i><i
+                            class="bi bi-star-fill graystar"></i></span>
+                    <div class="bar">
+                        <div class="fill" style="width: 33%;"></div>
+                    </div>
+                    <span>(2)</span>
+                </div>
+                <div>
+                    <span><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
+                            class="bi bi-star-fill graystar"></i><i class="bi bi-star-fill graystar"></i><i
+                            class="bi bi-star-fill graystar"></i></span>
+                    <div class="bar">
+                        <div class="fill" style="width: 0%;"></div>
+                    </div>
+                    <span>(0)</span>
+                </div>
+                <div>
+                    <span><i class="bi bi-star-fill"></i><i class="bi bi-star-fill graystar"></i><i
+                            class="bi bi-star-fill graystar"></i><i class="bi bi-star-fill graystar"></i><i
+                            class="bi bi-star-fill graystar"></i></span>
+                    <div class="bar">
+                        <div class="fill" style="width: 0%;"></div>
+                    </div>
+                    <span>(0)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

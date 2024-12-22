@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            background-color: white;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            color: #333;
+        }
+
+        .header {
+            position: relative;
+            background: linear-gradient(to right, #5b21b6, #ec4899);
+            /* Replace with your image */
+            background-size: cover;
+            background-position: center;
+            height: 200px;
+
+        }
+
+        /*โปรไฟล์*/
+        .profile {
+            position: absolute;
+            bottom: -90px;
+            left: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 220px;
+            width: 210px;
+            padding: 5px;
+            border-radius: 8px;
+            background-color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            /* ขอบเงาสวยๆ */
+        }
+
+        .profile-pic {
+            width: 80px;
+            height: 80px;
+            border: 4px solid white;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #999;
+        }
+
+
+        .detail-head {
+            display: flex;
+            justify-content: space-between;
+            /* วางรีวิวให้ห่างจากปุ่ม */
+            align-items: center;
+            /* จัดกลางในแนวตั้ง */
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+
+        .detail-name {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .sub-title {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .review {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            /* วางข้อความในรีวิวให้อยู่กลาง */
+            text-align: center;
+            flex-grow: 0;
+            /* ให้รีวิวขยายเต็มพื้นที่ให้ปุ่มอยู่ขวาสุด */
+            padding-left: 280px;
+        }
+
+        .review-detail {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding-left: 5px;
+        }
+
+        .rating {
+            font-size: 1.5rem;
+            font-weight: normal;
+            color: #000000;
+            /* สีเด่น */
+        }
+
+        .stars {
+            font-size: 1rem;
+            color: gold;
+            /* สีดาว */
+            margin: 0.2rem 0;
+        }
+
+        .review small {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        /*ปุ่มแก้ไข*/
+        .edit-button {
+            background-color: #4b0082;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 15px;
+        }
+
+        .edit-button:hover {
+            background-color: #350062;
+        }
+
+        .container {
+            
+            margin: 20px;
+            padding: 20px;
+            background: #fff;
+            margin-left: 50px;
+        }
+
+        h3 {
+            margin-top: 30px;
+            color: #350062;
+           
+            padding-bottom: 5px;
+            font-size: 1.4em;
+        }
+
+        .sub-header {
+            font-size: 0.9em;
+            color: orange;
+            font-weight: normal;
+            margin-left: 10px;
+        }
+
+        /*กล่องข้อความ*/
+        .about-me,
+        .skills,
+        .interest,
+        .experience {
+            background-color: rgba(244, 244, 244, 0.8);
+            height: auto;
+            margin-bottom: 50px;
+            border-radius: 8px;
+            padding: 8px;
+        }
+        /*กระดิ่ง*/
+        .notification-btn {
+            position: relative;
+            padding: 8px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        /*เลขแจ้งเตือนตรงกระดิ่ง*/
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 16px;
+            height: 16px;
+            background: #ef4444;
+            border-radius: 50%;
+            color: white;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /*พื้นหลังกลมรีวิว*/
+        .bg-sumary {
+            background-color: #FFE88C;
+            /* สีเหลือง */
+            border-radius: 50%;
+            /* ทำให้เป็นวงกลม */
+            width: 50px;
+            /* กำหนดความกว้าง */
+            height: 50px;
+            /* กำหนดความสูง */
+            display: flex;
+            /* ใช้ Flexbox */
+            flex-direction: column;
+            /* จัดองค์ประกอบในแนวตั้ง */
+            justify-content: center;
+            /* จัดให้อยู่กลางในแนวตั้ง */
+            align-items: center;
+            /* จัดให้อยู่กลางในแนวนอน */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* เพิ่มเงา */
+            text-align: center;
+            font-family: Arial, sans-serif;
+            /* ฟอนต์ */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <!-- Header Section -->
+         <!--โปรไฟล์นิสิต-->
+        <div class="header">
+            <div class="profile">
+                <div class="profile-pic">N</div>
+                <div class="detail-name">
+                    <div class="name">ณัฐชา ศิริพันธ์</div>
+                    <div class="sub-title">สาขา วิทยาการคอมพิวเตอร์</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <!--พวกรีวิวแจ้งเตือนและปุ่มแก้ไข-->
+        <div class="content">
+            <div class="detail-head">
+                <div class="review">
+                    <div class="rating bg-sumary">4</div>
+                    <div class="review-detail">
+                        <div class="stars">★★★★★</div>
+                        <small>from 6 people</small>
+                    </div>
+                </div>
+                <div>
+                    <button class="notification-btn">
+                        <i class="bi bi-bell"></i>
+                        <span class="notification-badge">1</span>
+                    </button>
+                    <button class="edit-button">Edit</button>
+                </div>
+            </div>
+        </div>
+        <!--ส่วนเนื้อหา-->
+        <div class="container">
+            <h3>About Me</h3>
+            <section class="about-me">
+                <p>นางสาวณัฐชา ศิริพันธุ์ นิสิตชั้นปีที่ 3 สาขาวิชาการคอมพิวเตอร์ คณะวิทยาศาสตร์ มหาวิทยาลัยนเรศวร</p>
+                <div class="contact">
+                    <p>Contact: เบอร์โทร: 0xx-xxx-xxxx, อีเมล: nutchas6x@nu.ac.th</p>
+                </div>
+            </section>
+            <h3>Experience</h3>
+            <section class="experience">
+                <p>การพัฒนาโปรเจควิเคราะห์ข้อมูลเชิงคณิตศาสตร์, การสร้างและจัดการระบบซอฟต์แวร์ด้วยแนวคิด Agile, การปรับเปลี่ยนและพัฒนาหัวข้อโปรเจคให้สอดคล้องกับความสนใจและสถานการณ์</p>
+            </section>
+        
+            <h3>Skills</h3>
+            <section class="skills">
+                <p>Programming Languages: Python, Java, C++</p>
+                <p>Data Analysis: Logistic Regression, Data Visualization และการจัดการข้อมูลด้วย Pandas</p>
+                <p>Software Development: การทำงานในรูปแบบ Agile, การเขียนและจัดการ User Story, และการพัฒนาโปรเจคบน Git</p>
+                <p>Communication: การทำงานเป็นทีม, การนำเสนอโปรเจค, และการเขียนเอกสารเชิงเทคนิค</p>
+            </section>
+        
+            <h3>Interest</h3>
+            <section class="interest">
+                
+                <p>Data Science และ Machine Learning, การพัฒนาซอฟต์แวร์: การทำงานร่วมกันกับทีมพัฒนาซอฟต์แวร์ และการปรับปรุงกระบวนการทำงานแบบ Agile</p>
+            </section>
+        </div>
+        
+        
+    </div>
+</body>
+
+</html>
