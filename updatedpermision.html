@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permission Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #FF6F00;
+            padding: 20px;
+            color: white;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+        }
+
+        .sub-menu {
+            margin-left: 24px;
+        }
+
+        .sub-menu .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .page-title {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .role-selector {
+            margin-bottom: 30px;
+        }
+
+        .role-selector label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .role-dropdown {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        /* Permission Sections */
+        .permission-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .permission-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .permission-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .permission-name {
+            font-size: 16px;
+        }
+
+        .permission-toggle {
+            background-color: #9C27B0;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .permission-toggle:hover {
+            background-color: #7B1FA2;
+        }
+
+        /* Dropdown Menu */
+        .dropdown-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Add spacing between sections */
+        .section-spacing {
+            margin-top: 40px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="#" class="nav-item">
+                <i>🏠</i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>👥</i>
+                <span>Manage User</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>📊</i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>⚙️</i>
+                <span>General</span>
+            </a>
+            <div class="sub-menu">
+                <a href="updatedrolemanage.html" class="nav-item">Role</a>
+                <a href="#" class="nav-item active">Permission</a>
+            </div>
+            <a href="#" class="nav-item">
+                <i>⚙️</i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>↩️</i>
+                <span>Logout</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1 class="page-title">Permission</h1>
+
+            <div class="role-selector">
+                <label>Role</label>
+                <select class="role-dropdown" onchange="updatePermissions(this.value)">
+                    <option value="teacher">อาจารย์</option>
+                    <option value="student">นิสิต</option>
+                </select>
+            </div>
+
+            <!-- Jobs Posting Management Section -->
+            <div class="permission-section">
+                <h2 class="section-title">จัดการโพสงาน (Jobs Posting Management)</h2>
+                <div class="permission-list">
+                    <div class="permission-item">
+                        <div class="permission-name">สร้างโพสงานใหม่</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">แก้ไขหรือลบโพสงานที่สร้าง</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">ปิดการรับสมัครงาน</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Management Section -->
+            <div class="permission-section">
+                <h2 class="section-title">จัดการการสมัครงาน (Applications Management)</h2>
+                <div class="permission-list">
+                    <div class="permission-item">
+                        <div class="permission-name">ดูรายชื่อนิสิตที่สมัครเข้าช่วยงาน</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">อนุมัติหรือปฏิเสธการสมัครของนิสิต</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">ส่งเมลเตือนหรือแจ้งข้อมูลเพิ่มเติมให้นิสิต</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Section -->
+            <div class="permission-section">
+                <h2 class="section-title">แก้ไขโปรไฟล์ (Edit Profile)</h2>
+                <div class="permission-list">
+                    <div class="permission-item">
+                        <div class="permission-name">แก้ไขข้อมูลส่วนตัวและข้อมูลการติดต่อ</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updatePermissions(role) {
+            const permissions = document.querySelectorAll('.permission-list');
+            
+            if (role === 'student') {
+                // Update to student permissions
+                permissions[0].innerHTML = `
+                    <div class="permission-item">
+                        <div class="permission-name">ส่งใบสมัครงาน</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">ดูโพสงาน (View Job Postings)</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">เรียกดูและค้นหาโพสงานที่อาจารย์โพส</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                `;
+                
+                // Hide Applications Management section for students
+                permissions[1].parentElement.style.display = 'none';
+            } else {
+                // Restore teacher permissions
+                permissions[0].innerHTML = `
+                    <div class="permission-item">
+                        <div class="permission-name">สร้างโพสงานใหม่</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">แก้ไขหรือลบโพสงานที่สร้าง</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                    <div class="permission-item">
+                        <div class="permission-name">ปิดการรับสมัครงาน</div>
+                        <button class="permission-toggle">อนุญาต</button>
+                    </div>
+                `;
+                
+                // Show Applications Management section for teachers
+                permissions[1].parentElement.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

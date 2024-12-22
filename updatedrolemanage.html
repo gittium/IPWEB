@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #FF6F00;
+            padding: 20px;
+            color: white;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item i {
+            margin-right: 12px;
+        }
+
+        .sub-menu {
+            margin-left: 24px;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            color: #333;
+        }
+
+        .create-button {
+            background-color: #e0e0e0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Table Controls */
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .entries-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .entries-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #e0e0e0;
+        }
+
+        .delete-button {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .search-input {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #e0e0e0;
+            width: 200px;
+        }
+
+        /* Table Styles */
+        .role-table {
+            width: 100%;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .role-table th {
+            text-align: left;
+            padding: 16px;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        .role-table td {
+            padding: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            color: #666;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .pagination-button {
+            padding: 8px 16px;
+            border: none;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination-current {
+            padding: 8px 16px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="#" class="nav-item">
+                <i>🏠</i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>👥</i>
+                <span>Manage User</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>📊</i>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>⚙️</i>
+                <span>General</span>
+            </a>
+            <div class="sub-menu">
+                <a href="#" class="nav-item">Role</a>
+                <a href="updatedpermision.html" class="nav-item">Permission</a>
+            </div>
+            <a href="#" class="nav-item">
+                <i>⚙️</i>
+                <span>Settings</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i>↩️</i>
+                <span>Logout</span>
+            </a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1 class="page-title">Role</h1>
+                <button class="create-button">
+                    <span>+</span>
+                    <span>Create Role</span>
+                </button>
+            </div>
+
+            <div class="table-controls">
+                <div class="entries-control">
+                    <span>Show</span>
+                    <select class="entries-select">
+                        <option>2</option>
+                        <option>5</option>
+                        <option>10</option>
+                    </select>
+                    <span>entries</span>
+                    <button class="delete-button">Delete</button>
+                </div>
+                <input type="search" placeholder="Search" class="search-input">
+            </div>
+
+            <table class="role-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>นิสิต</td>
+                        <td>1 month ago</td>
+                    </tr>
+                    <tr>
+                        <td>อาจารย์</td>
+                        <td>1 month ago</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <div class="pagination-info">Showing 1 to 2 of 2 entries</div>
+                <div class="pagination-controls">
+                    <button class="pagination-button">Previous</button>
+                    <span class="pagination-current">1</span>
+                    <button class="pagination-button">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
