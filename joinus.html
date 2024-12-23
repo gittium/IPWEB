@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View Applications Page">
+    <title>View Applications</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header */
+        .header {
+            background-color: #4E2A84;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header img {
+            height: 40px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .header-nav a {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-weight: normal;
+            border-bottom: 2px #333;
+            padding-bottom: 5px;
+            flex: 1; /* ทำให้ข้อความชิดขวาหากมีองค์ประกอบอื่นเพิ่ม */
+        }
+
+        .applicant-card {
+            background-color: #ffff;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .applicant-photo {
+            width: 100%;
+            height: 250px;
+            background-color: #D3D3D3;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .applicant-details {
+            width: 100%;
+            height: 250px;
+            background-color: #D3D3D3;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .applicant-details span {
+            font-weight: bold;
+        }
+
+        .applicant-details-name {
+            width: 100%;
+            height: 50px;
+            background-color: #D3D3D3;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .applicant-details-name span {
+            font-weight: bold;
+        }
+
+        .applicant-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .details {
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .details label {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .details span {
+            font-size: 1rem;
+        }
+
+        .jobdetails {
+            width: 100%;
+            height: 150px;
+            background-color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px  #CCC;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center; /* จัดแนวให้องค์ประกอบอยู่ตรงกลางแนวตั้ง */
+            border-bottom: 1px solid #333; /* เส้นใต้ยาวเต็มความกว้าง */
+            padding-bottom: 0.1px; /* ระยะห่างระหว่างข้อความและเส้น */
+            margin-bottom: 20px; /* ระยะห่างระหว่างหัวข้อและเนื้อหาด้านล่าง */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* กระจายปุ่มไปยังขอบซ้ายและขวา */
+            align-items: center; /* จัดให้ปุ่มอยู่กึ่งกลางในแนวตั้ง */
+            width: 100%; /* ใช้พื้นที่เต็มของคอนเทนเนอร์ */
+            margin-top: 50px; /* เพิ่มระยะห่างจากด้านบน */
+        }
+
+        .joinus-btn {
+            background-color: #FFA500;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .joinus-btn:hover {
+            background-color: #CC8400;
+        }
+
+         
+        .report-btn {
+            color: #333; /* สีของตัวหนังสือ */
+            background: none; /* ลบพื้นหลัง */
+            padding: 0; /* ลบระยะห่างภายใน */
+            border: none; /* ลบกรอบ */
+            border-radius: 0; /* ลบมุมโค้ง */
+            font-size: 1rem; /* ขนาดตัวอักษร */
+            cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นรูปมือ */
+            text-decoration: underline; /* เพิ่มเส้นใต้เพื่อให้ดูเหมือนลิงก์ */
+            transition: color 0.3s; /* เพิ่มเอฟเฟกต์เปลี่ยนสี */
+        }
+
+        .report-btn:hover {
+            color: #333; /* เปลี่ยนสีเมื่อโฮเวอร์ */
+            /*text-decoration: none; /* ลบเส้นใต้เมื่อโฮเวอร์ */
+        }
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-align: center; 
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+            max-height: 300px; /* กำหนดความสูงสูงสุด */
+            overflow-y: auto; /* เปิดใช้งานการเลื่อนในแนวตั้ง */
+            padding-right: 10px; /* เพิ่มระยะห่างด้านขวาเพื่อให้ข้อความไม่ชิด scrollbar */
+            scrollbar-width: thin; /* ทำให้ scrollbar บาง */
+        }
+
+        .modal-body::-webkit-scrollbar {
+            width: 8px; /* กำหนดความกว้างของ scrollbar */
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background-color: #ccc; /* สีของ scrollbar */
+            border-radius: 4px; /* เพิ่มความโค้งมนของ scrollbar */
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background-color: #999; /* สี scrollbar เมื่อเลื่อนเมาส์ */
+        }
+
+        .modal-body label {
+            display: block; /* ทำให้ label ขึ้นบรรทัดใหม่ */
+            margin-bottom: 10px; /* เพิ่มระยะห่างระหว่าง label */
+            font-size: 0.9rem; /* ขนาดข้อความของ label */
+            line-height: 1.4; /* เพิ่มระยะห่างระหว่างบรรทัดของ label */
+        }
+
+        .modal-body select {
+            display: block; /* ทำให้ select ขึ้นบรรทัดใหม่ */
+            width: 100%; /* ทำให้ select กว้างเต็มพื้นที่ */
+            margin-top: 10px; /* เพิ่มระยะห่างระหว่าง select กับ label ด้านบน */
+            padding: 5px; /* เพิ่ม padding ภายใน select */
+            font-size: 1rem; /* ขนาดข้อความของ select */
+            border-radius: 5px; /* เพิ่มความโค้งมนของขอบ */
+            border: 1px solid #ccc; /* ขอบสีเทา */
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cancel-btn, .confirm-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background-color: #D3D3D3;
+        }
+
+        .confirm-btn {
+            background-color: #4E2A84;
+            color: white;
+        }
+
+        .cancel-btn:hover {
+            background-color: #B0B0B0;
+        }
+
+        .confirm-btn:hover {
+            background-color: #3D1F6A;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #4E2A84;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <img src="university-logo.png" alt="Naresuan University">
+        <nav class="header-nav">
+            <a href="#">เกี่ยวกับเรา</a>
+            <a href="#">ข่าวสาร</a>
+            <a href="#">โปรไฟล์</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="applicant-card">
+            
+            <div class="applicant-photo">
+                <span>Picture</span>
+            </div>
+        </div>
+        
+        <div class="title-container">
+            <h1 class="section-title">Teaching Assistant</h1>
+        </div>
+
+        <div class="applicant-card">
+
+            <div class="applicant-details">
+                <span>รายละเอียดงาน</span>
+            </div>
+
+            <div class="applicant-details-name">
+                <span>อาจารย์</span>
+            </div>
+
+            <!-- Button Container -->
+            <div class="button-container">
+                <button class="report-btn" onclick="showReportModal()">รายงาน</button>
+                <button class="joinus-btn">Join us</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>รายงาน</span>
+            </div>
+            <div class="modal-body">
+                <label>เนื้อหาไม่เกี่ยวข้องกับระบบ</label>
+                <label>1. โพสต์ที่ไม่ได้เกี่ยวข้องกับงานวิจัย งาน TA/RA หรือกิจกรรมวิชาการ เช่น โฆษณาเชิงพาณิชย์ การโพสต์ส่วนตัว เนื้อหาผิดกฎหมาย</label>
+                <label>2. โพสต์ที่มีข้อมูลที่ละเมิดกฎหมาย เช่น การละเมิดทรัพย์สินทางปัญญา การกระทำผิดอาญา การละเมิดสิทธิส่วนบุคคล</label>
+                <label>3. โพสต์ที่เปิดเผยข้อมูลส่วนตัว เช่น ชื่อ, ที่อยู่, หรือเบอร์โทรศัพท์ โดยไม่ได้รับความยินยอมเนื้อหาที่ก่อให้เกิดความเข้าใจผิดหรือเป็นเท็จ</label>
+                <label>4. โพสต์ที่เผยแพร่ข้อมูลผิดพลาดหรือเจตนาหลอกลวง เช่น งานปลอมหรืองานที่ไม่มีอยู่จริงเนื้อหาที่ไม่สุภาพหรือก้าวร้าว</label>
+                <label>5. การใช้ภาษาหยาบคาย เหยียดเชื้อชาติ ศาสนา หรือเพศ</label>
+                <label>6. เนื้อหาที่สร้างความขัดแย้งหรือความไม่พอใจในชุมชน</label>
+                <label>7. เนื้อหาลามกอนาจารหรือไม่เหมาะสมทางศีลธรรม</label>
+                <label>8. โพสต์ที่มีเนื้อหาเกี่ยวกับภาพหรือข้อความที่ไม่เหมาะสมสำหรับมหาวิทยาลัย</label>
+                <label>9. การส่งเสริมพฤติกรรมที่ไม่เหมาะสม เช่น การชักชวนทำงานที่ขัดต่อจรรยาบรรณ หรือการยุยงให้ทำผิดกฎ</label>
+                <label>10. เนื้อหาที่ซ้ำซ้อนหรือสแปม (Spam)</label>
+                <label>11. โพสต์เดิมที่ถูกส่งซ้ำหลายครั้ง</label>
+                <label>12. โพสต์ที่มีลักษณะเป็นข้อความหรือโฆษณาอัตโนมัติ</label>
+            
+                <select id="report-reason">
+                    <option value="1">Reason 1</option>
+                    <option value="2">Reason 2</option>
+                    <option value="3">Reason 3</option>
+                    <option value="4">Reason 4</option>
+                    <option value="5">Reason 5</option>
+                    <option value="6">Reason 6</option>
+                    <option value="7">Reason 7</option>
+                    <option value="8">Reason 8</option>
+                    <option value="9">Reason 9</option>
+                    <option value="10">Reason 10</option>
+                    <option value="11">Reason 11</option>
+                    <option value="12">Reason 12</option>
+                </select>
+            </div>            
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeReportModal()">ยกเลิก</button>
+                <button class="confirm-btn">ยืนยันการรายงาน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© CSIT - Computer Science and Information Technology</p>
+    </footer>
+
+    <script>
+        function showReportModal() {
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

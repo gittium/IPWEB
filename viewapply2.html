@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View Applications Page">
+    <title>View Applications</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Header */
+        .header {
+            background-color: #4E2A84;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header img {
+            height: 30px;
+        }
+
+        .header-nav {
+            display: ;
+            gap: 20px;
+        }
+
+        .header-nav a {
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .applicant-card {
+            background-color: #ffff;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .applicant-photo-name {
+            width: 30%;
+            height: 300px;
+            background-color: #ffff;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column; /* ทำให้รูปและชื่อเรียงจากบนลงล่าง */
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc; /* เปลี่ยนจากเส้นประเป็นเส้นปกติ */
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงาของกรอบ */
+        }
+
+        .applicant-photo {
+            width: 120px;
+            height: 120px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;   
+        }
+
+        .applicant-photo span {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .applicant-name {
+            font-size: 1.2rem;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+
+        .resume {
+            width: 50%;
+            height: 400px;
+            background-color: #e0e0e0;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px #ccc;
+            border-radius: 0px;
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-top: 60px;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .details label {
+            font-weight: normal;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center; /* จัดแนวให้องค์ประกอบอยู่ตรงกลางแนวตั้ง */
+            border-bottom: 1px solid #333; /* เส้นใต้ยาวเต็มความกว้าง */
+            padding-bottom: 0.1px; /* ระยะห่างระหว่างข้อความและเส้น */
+            margin-bottom: 20px; /* ระยะห่างระหว่างหัวข้อและเนื้อหาด้านล่าง */
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: normal;
+            flex: 1; /* ทำให้ข้อความชิดขวาหากมีองค์ประกอบอื่นเพิ่ม */
+        }
+        
+
+        .back-arrow {
+            display: inline-flex;
+            width: 10px;
+            height: 10px;
+            margin-right: 10px; /* ระยะห่างระหว่างลูกศรและข้อความ */
+            border-left: 2px solid #333; /* สร้างเส้นเฉียง */
+            border-bottom: 2px solid #333;
+            transform: rotate(45deg); /* หมุนเส้นให้เป็นลูกศร */
+            cursor: pointer;   
+            position: absolute; /* ใช้ position เพื่อกำหนดตำแหน่ง */
+            top: 10%; /* ระยะห่างจากขอบด้านบน */
+            left: 20px; /* ระยะห่างจากขอบด้านซ้าย */     
+        }
+        
+        .back-arrow:hover {
+            border-color: #555; /* เปลี่ยนสีเมื่อวางเมาส์ */
+        }
+
+        /* Approve Button */
+        .approve-btn {
+            background-color: #FFA500;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 70px; /* เพิ่มระยะห่างระหว่างปุ่มและด้านบน */
+        }
+
+        .approve-btn:hover {
+            background-color: #cc8400;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #4E2A84;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            .header-nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .applicant-photo-name {
+                width: 50%; /* กำหนดให้กรอบกว้างขึ้นสำหรับหน้าจอเล็ก */
+                height: relative; /* ปรับความสูงให้ยืดหยุ่นตามเนื้อหาภายใน */
+            }
+
+            .applicant-photo {
+                width: relative; /* ลดขนาดรูปภาพ */
+                height: relative; /* ลดขนาดรูปภาพ */
+            }
+
+            .applicant-name {
+                font-size: 1rem; /* ลดขนาดตัวอักษรของชื่อ */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div>
+            <img src="university-logo.png" alt="Naresuan University">
+        </div>
+        <nav class="header-nav">
+            <a href="#">เกี่ยวกับเรา</a>
+            <a href="#">ข่าวสาร</a>
+            <a href="#">ออกจากระบบ</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <a href="#" class="back-arrow"></a>
+    <div class="container">
+        <div class="title-container">
+            <h1 class="section-title">View Applications (1)</h1>
+        </div>
+        
+
+        <!-- Applicant Card -->
+        <div class="applicant-card">
+            <div class="applicant-photo-name">
+                <div class="applicant-photo">
+                    <span></span>
+                </div> 
+                <div class="applicant-name">ณัฐชา ศิริพันธ์</div>
+            </div>
+            
+            <div class="details">
+                <label for="resume">Resume / เรซูเม่</label>
+            </div>
+
+                <div class="resume">
+                    <span>+</span>
+                </div>
+
+            <div class="details">
+                <label>Field / สาขา</label>
+                <span>วิทยาการคอมพิวเตอร์</span>
+
+                <label>Year / ชั้นปี</label>
+                <span>3</span>
+
+                <label>GPAX / เกรดเฉลี่ย</label>
+                <span>3.xx</span>
+
+                <label>E-mail / อีเมล</label>
+                <span><a href="mailto:nutchas6x@nu.ac.th">nutchas6x@nu.ac.th</a></span>
+
+                <label>Phone / เบอร์ติดต่อ</label>
+                <span>0xx-xxxx-xxx</span>
+            </div>
+
+            <button class="approve-btn">Approve</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© CSIT - Computer Science and Information Technology</p>
+    </footer>
+</body>
+</html>
