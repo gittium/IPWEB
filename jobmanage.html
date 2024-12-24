@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Job Posting</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 20px; /* ขนาดตัวหนังสือเริ่มต้น */
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header-nav {
+            display: flex;
+            width: 100%;
+            background-color: #5A2E93;
+            padding: 10px 0;
+            justify-content: right;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .header-nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+        }
+
+        .header-nav a:hover {
+            text-decoration: underline;
+        }
+
+        .line-header {
+            display: flex;
+            justify-content: space-between;
+            
+            width: 50%;
+            margin-top: 150px; /* Adjusted spacing from top */
+            margin-bottom: -80px;
+            padding: 10px 20px;
+            border-top: 2px solid rgb(234, 234, 234);
+            position: relative;
+        }
+
+        .line-header label {
+            font-size: 20px;
+            font-weight: medium;
+            color: black;
+            margin-top: -45px;
+        }
+
+        .line-header .btn-manage {
+            position: absolute;
+            top: -41px; /* Place above the line */
+            right: 20px; /* Align to the right of the header */
+            padding: 10px 20px;
+            background-color: rgb(192, 192, 192);
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .line-header .btn-manage:hover {
+            background-color: #999999;
+        }
+
+        .line-header .btn-manage.active {
+            background-color: #999999;
+            color: black;
+        }
+
+        .back-arrow {
+            position: absolute; /* ใช้ตำแหน่งแบบ absolute */
+            top: 100px; /* ระยะห่างจากขอบด้านบน */
+            left: 150px; /* ระยะห่างจากขอบด้านซ้าย */
+            display: inline-flex; /* ใช้สำหรับจัดวางไอคอนและข้อความ */
+            align-items: center; /* จัดข้อความและไอคอนให้อยู่ตรงกลาง */
+            gap: 0.5rem; /* ระยะห่างระหว่างไอคอนกับข้อความ */
+            padding: 10px 16px; /* ขนาดของปุ่ม */
+            font-size: 16px; /* ขนาดตัวอักษร */
+            color: #605e5e; /* สีข้อความ */
+            /*background-color: #FF6B00; /* สีพื้นหลังปุ่ม */
+            border: none; /* ลบเส้นขอบ */
+            border-radius: 8px; /* มุมโค้ง */
+            text-decoration: none; /* ลบเส้นใต้ */
+            cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อ hover */
+            transition: all 0.3s ease; /* เพิ่มเอฟเฟกต์การเปลี่ยนแปลง */
+        }
+
+        .back-arrow:hover {
+            /*background-color: #E65A00; /* เปลี่ยนสีเมื่อ hover */
+            transform: scale(1.05); /* ขยายเล็กน้อยเมื่อ hover */
+        }
+
+        .back-arrow i {
+            font-size: 2rem; /* ปรับขนาดไอคอน */
+        }
+
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: white;
+            /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+            margin-top: 120px;
+        }
+
+        .header-title {
+            left: 80px;
+            display: inline-flex; /* ใช้สำหรับจัดวางไอคอนและข้อความ */
+            color: black;
+            text-align: left;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 60px;
+            font-weight: medium;
+            margin-bottom: 50px;
+        } 
+
+        .form-group {
+            display: flex;
+            flex-direction: column; /* จัด layout ของ label และ input เป็นแนวตั้ง */
+            margin-bottom: 3.5rem; /* เพิ่มช่องว่างระหว่างแต่ละฟอร์ม */
+        }
+
+        .form-group label {
+            margin-bottom: 22px; /* เพิ่มช่องว่างระหว่าง label กับ input */
+            font-weight: medium; /* เน้นหัวข้อ */
+            text-align: left; /* จัดชิดซ้าย */
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            flex: 1; /* กำหนดให้ input ใช้พื้นที่ที่เหลือ */
+            padding: 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            /*box-shadow: 0 0 0 3px rgba(255,107,0,0.1); */
+            transition: box-shadow 0.3s ease;
+            
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: orange;
+            box-shadow: 0 0 0 3px rgba(255,107,0,0.1); /* เพิ่มเงาเข้มขึ้นเมื่อโฟกัส */
+            outline: none; /* ลบเส้นขอบสีฟ้า */
+        }
+
+        .form-group textarea {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .form-group .images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 4.5rem;
+            margin-top: 1rem;
+        }
+
+        .form-group .images img {
+            width: 180px; /* ความกว้าง */
+            height: 140px; /* ความสูง */
+            object-fit: cover; /* ปรับภาพให้พอดีกับกรอบ */
+            border-radius: 8px; /* ทำมุมโค้งเล็กน้อย */
+        }
+
+        .form-group .images .add-photo {
+            width: 180px; /* ความกว้าง */
+            height: 140px; /* ความสูง */
+            border: 2px dashed #E2E8F0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .form-group .images .add-photo:hover {
+            border-color: #FF6B00;
+            background-color: #F5F7FA;
+        }
+
+        .images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .images img {
+            width: 180px;
+            height: 135px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .images img:hover {
+            border-color: orange;
+        }
+
+        .images img.selected {
+            border-color: #FF6B00;
+            box-shadow: 0 0 5px #FF6B00;
+        }
+        .images img.active {
+            border-color: #FF6B00;
+            box-shadow: 0 0 5px #FF6B00;
+        }
+
+        .add-photo {
+            position: relative;
+            width: 180px;
+            height: 140px;
+            border: 2px dashed #E2E8F0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-photo input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0; /* ซ่อน input */
+            cursor: pointer;
+        }
+
+        .add-photo label {
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+        }
+
+        .add-photo:hover {
+            border-color: #FF6B00;
+            background-color: #F5F7FA;
+        }
+
+        .image-container {
+            position: relative;
+        }
+
+        .image-container:hover .delete-btn {
+            opacity: 1; /* แสดงปุ่มลบเมื่อ hover */
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 30px;
+            gap: 2rem;
+        }
+
+        .buttons button {
+            padding: 10px 23px;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .buttons .delete-button {
+            background-color: white;
+            color: red;
+        }
+
+        .buttons .done-button {
+            background-color: #64d364;
+            color: white;
+        }
+
+        .buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            width: 100%;
+            background-color: #5A2E93;
+            color: #fff;
+            text-align: center;
+            padding: 10px auto;
+            bottom: 0;
+            left: 0;
+            font-size: 14px;
+            margin-top: 4rem; /* เพิ่มระยะห่างด้านบนของ footer */
+        }
+
+        .footer img {
+            height: 25px;
+            vertical-align: middle;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                margin-top: 120px;
+            }
+
+            .header-nav {
+                justify-content: right; /* Center navigation on mobile */
+                flex-wrap: wrap;
+            }
+
+            .header-nav a {
+                font-size: 14px;
+                margin: 0 10px;
+            }
+
+            .header-title {
+                font-size: 20px;
+            }
+
+            .form-group {
+                gap: 10px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .submit-btn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
+
+            .images img, .add-photo {
+                width: 80px;
+                height: 60px;
+            }
+
+            .back-arrow {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-title {
+                font-size: 18px;
+                padding: 10px;
+            }
+
+            .form-group label {
+                font-size: 12px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .submit-btn {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .images img, .add-photo {
+                width: 70px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header-nav">
+        <a href="#">เกี่ยวกับเรา</a>
+        <a href="#">ข่าวสาร</a>
+        <a href="#">เข้าสู่ระบบ</a>
+    </header>
+    <div>
+        <a href="javascript:history.back()" class="back-arrow">
+            <i class="bi bi-chevron-left"></i> 
+        </a>
+    </div>
+    <div class="line-header">
+        <label>View Applications</label>
+        <button class="btn-manage" onclick="toggleManageJob()">Manage Job</button>
+    </div>
+    <div class="container">
+        <div class="header-title">Manage Job</div>
+        <form>
+            <div class="form-group">
+                <label for="job-name">Job Name/ชื่องาน</label>
+                <input type="text" id="job-name" name="job-name" placeholder="" value="Teaching Assistant Data Mining">
+            </div>
+
+            <div class="form-group">
+                <label for="job-details">Job Details/รายละเอียดงาน</label>
+                <textarea id="job-details" name="job-details" placeholder="">
+                คุณสมบัติผู้สมัคร:
+                1. เป็นนิสิต/นักศึกษาชั้นปีที่ 3 หรือสูงกว่า
+                2. มีความรู้และทักษะในเรื่อง: Weka, Excel
+                3. มีความรับผิดชอบ ตรงต่อเวลา และสามารถทำงานร่วมกับผู้อื่นได้
+                4. ได้เกรด A หรือ B ในรายวิชา Data Mining
+                หน้าที่และความรับผิดชอบ:
+                1. ช่วยตรวจและให้คะแนนการบ้าน/โปรเจกต์
+                2. ช่วยสนับสนุนการสอนในห้องเรียน
+                ตารางทำงาน: วันจันทร์/พฤหัสบดี 10.00 - 11.50 น.
+                ค่าตอบแทน: 7,000 บาท/เทอม</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="job-category">Job Category/ประเภทงาน</label>
+                <select id="job-category" name="job-category">
+                    <option value=""></option>
+                    <option value="Teaching Assistant" selected>Teaching Assistant</option>
+                    <option value="Mobile Application">Mobile Application</option>
+                    <option value="Game Development">Game Development</option>
+                    <option value="Chattbot">Chattbot</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Research Assistant">Research Assistant</option>
+                    <option value="Graphic Design">Graphic Design</option>
+                    <option value="Data Science & AI">Data Science & AI</option>
+                    <option value="Website Scraping">Website Scraping</option>
+                    <option value="Desktop Application">Desktop Application</option>
+                    <option value="UX/UI">UX/UI</option>
+                    <option value="IOT Project">IOT Project</option>
+                    <option value="IT Solution and Support">IT Solution and Support</option>
+                    <option value="Data Labeling">Data Labeling</option>
+                    <option value="Data Engineering">Data Engineering</option>
+                    <option value="Wordpress">Wordpress</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Cover photo/ภาพหน้าปกงาน</label>
+                <div class="images">
+                    <img src="photo/02.jpg" alt="Image 1" onclick="toggleImageActive(this)">
+                    <img src="photo/01.png" alt="Image 2" onclick="toggleImageActive(this)">
+                    <div class="add-photo">
+                        <input type="file" id="upload-photo" accept="image/*" onchange="previewImage(event)">
+                        <label for="upload-photo">+</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="vacancy">Student Count Required/จำนวนตำแหน่งที่ต้องการ</label>
+                <input type="number" id="vacancy" name="vacancy" placeholder="" value="2">
+            </div>
+
+            <div class="form-group">
+                <label for="job-name">Application Dateline/วันสิ้นสุดงาน</label>
+                <input type="date" id="job-name" name="job-name" placeholder="" value="2568-06-01">
+            </div>
+
+            <div class="form-group">
+                <label for="job-category">Job Category/ผลตอบแทน</label>
+                <select id="job-category" name="job-category">
+                    <option value=""></option>
+                    <option value="full-time" selected>เงิน</option>
+                    <option value="part-time">ชั่วโมงกิจกรรม</option>
+                </select>
+            </div>
+
+            <div class="buttons">
+                <button type="button" class="delete-button">Delete</button>
+                <button type="submit" class="done-button">Done</button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 CSIT | Faculty of Science and Technology</p>
+    </footer>
+    <script>
+        function addImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // สร้าง container สำหรับรูปภาพ
+                    const container = document.createElement('div');
+                    container.classList.add('image-container');
+    
+                    // สร้าง element รูปภาพ
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = "Uploaded Image";
+                    img.style.width = "180px";
+                    img.style.height = "135px";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
+                    img.onclick = () => toggleImageActive(img); // คลิกเพื่อเลือก
+                    const addPhoto = doc.querySelector('.add-photo')
+                    addPhoto.insertAdjacentElement('beforebegin', img);
+                    container.appendChild(img);
+    
+                    // สร้างปุ่มลบ
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.innerHTML = "&times;";
+                    deleteBtn.onclick = () => container.remove(); // คลิกเพื่อลบรูป
+                    container.appendChild(deleteBtn);
+    
+                    // เพิ่ม container ใน .images
+                    document.querySelector('.images').appendChild(container);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    
+        function selectImage(img) {
+            // เพิ่ม/ลบคลาส selected
+            const selected = document.querySelector('.images img.selected');
+            if (selected) selected.classList.remove('selected');
+            img.classList.add('selected');
+        }
+    </script>
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = "Uploaded Image";
+                    img.style.width = "180px";
+                    img.style.height = "135px";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
+                    
+                    const addPhoto = document.querySelector('.add-photo');
+                    addPhoto.insertAdjacentElement('beforebegin', img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+    <script>
+        function toggleManageJob() {
+            const manageButton = document.querySelector('.btn-manage');
+            manageButton.classList.toggle('active');
+        }
+
+        function toggleImageActive(img) {
+            const images = document.querySelectorAll('.images img');
+            images.forEach(image => image.classList.remove('active'));
+            img.classList.add('active');
+        }
+    </script>
+    
+    
+    
+    
+</body>
+</html>
