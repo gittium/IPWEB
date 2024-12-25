@@ -126,51 +126,6 @@ a {
     margin-left: auto;
 }
 
-/* Header */
-.header {
-    background-color: #4E2A84;
-    color: white;
-    padding: 15px 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header img {
-    height: 40px;
-}
-
-.header-nav {
-    display: flex;
-    gap: 25px;
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 600;
-}
-
-.header-nav a {
-    color: white;
-    font-size: 1rem;
-    position: relative;
-    justify-content: flex-end;
-}
-
-.header-nav a::after {
-    content: '';
-    display: block;
-    width: 0;
-    height: 2px;
-    background: white;
-    transition: width;
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-}
-
-.header-nav a:hover::after {
-    width: 100%;
-}
-
 /* Main Content */
 .container {
     max-width: 1200px;
@@ -250,18 +205,6 @@ a {
     color: white;
     background-color: #4E2A84
 }
-
-
-/* Footer */
-.footer {
-    background-color: #4E2A84;
-    color: white;
-    padding: 15px 30px;
-    text-align: center;
-    margin-top: 40px;
-}
-
-/*นายเพิ่ม*/
 
 /*ส่วนบน ย้อนกลับ view app manage job*/
 .back-arrow {
