@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Teaching Assistant View Applications Page">
+    <title>Teaching Assistant Applications</title>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Montserrat:wght@600&display=swap"
+        rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="viewapply.css">
+
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="headerTop">
+        <div class="headerTopImg">
+            <img src="logo.png" alt="Naresuan University Logo">
+            <a href="#">Naresuan University</a>
+        </div>
+        <nav class="header-nav">
+            <a href="#">About Us</a>
+            <a href="#">News</a>
+            <a href="#">Logout</a>
+        </nav>
+    </header>
+
+    <!-- ปุ่ม back -->
+    <div>
+        <a href="" class="back-arrow"></a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="title-container">
+            <a href="#">View Applications</a> <!-- เพิ่ม href ที่นี่ -->
+            <a href="#">Manage Job</a> <!-- เพิ่ม href ที่นี่ -->
+        </div>
+        <br>
+        <div>
+            <h1>Teaching Assistant</h1>
+        </div>
+        <br>
+        <div class="bar">
+            <a href="#">ทั้งหมด</a>
+            <a href="#">วิทยาการคอมพิวเตอร์</a>
+            <a href="#">เทคโนโลยีสารสนเทศ</a>
+            <!-- เพิ่มปุ่มฟิลเตอร์ -->
+            <i class="bi bi-filter ms-auto" id="filter-btn" style="cursor: pointer;" ></i>
+        </div>
+
+        <!-- ซ่อนข้อความ -->
+        <div id="hidden-message" class="message-box">สาขา<br>
+                <button class="selected" id="branch-btn-cs">วิทยาการคอมพิวเตอร์</button>
+                <button class="selected" id="branch-btn-it">เทคโนโลยีสารสนเทศ</button>
+                <br><br>ชั้นปี<br>
+                <button class="selected" id="year-btn">ปี 1</button>
+                <button class="selected" id="year-btn">ปี 2</button>
+                <button class="selected" id="year-btn">ปี 3</button>
+                <button class="selected" id="year-btn">ปี 4</button>
+                <br><br>
+                <button class="selected" id="clear-btn">ล้าง</button>
+                <button class="selected" id="apply-btn">ตกลง</button>
+            </div>
+        </div>
+
+        <div class="application-list">
+            <!-- Card 1 -->
+            <div class="application-card">
+                <div class="number">1</div>
+                <div class="profile-img"></div>
+                <div class="details">
+                    <div class="name">ณัชชา ศิริพันธุ์</div>
+                    <div class="department">สาขา วิทยาการคอมพิวเตอร์</div>
+                    <div class="year">ปี 3</div>
+                </div>
+                <a href="viewapply2.html" class="chevron-link">
+                    <i class="bi bi-chevron-right"></i>
+                </a> 
+            </div>
+    
+            <!-- Card 2 -->
+            <div class="application-card">
+                <div class="number">2</div>
+                <div class="profile-img"></div>
+                <div class="details">
+                    <div class="name">ณัชชา ศิริพันธุ์</div>
+                    <div class="department">สาขา เทคโนโลยีสารสนเทศ</div>
+                    <div class="year">ปี 3</div>
+                </div>
+                <a href="viewapply2.html" class="chevron-link">
+                    <i class="bi bi-chevron-right"></i>
+                </a> 
+            </div>
+    
+            <!-- Card 3 -->
+            <div class="application-card">
+                <div class="number">3</div>
+                <div class="profile-img"></div>
+                <div class="details">
+                    <div class="name">ณัชชา ศิริพันธุ์</div>
+                    <div class="department">สาขา เทคโนโลยีสารสนเทศ</div>
+                    <div class="year">ปี 3</div>
+                </div>
+                <a href="viewapply2.html" class="chevron-link">
+                    <i class="bi bi-chevron-right"></i>
+                </a> 
+            </div>
+        </div>
+    
+    </div> 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+       
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-..." crossorigin="anonymous"></script>
+
+    <script src="viewapply.js"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© CSIT - Computer Science and Information Technology</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
