@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style_sidebar&role.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Placeholder for Sidebar -->
+        <div id="sidebar-container"></div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1 class="page-title">Role</h1>
+            </div>
+            <hr class="my-4">
+            <p align="right"><button class="create-button">
+                    <span>+</span>
+                    <span>Create Role</span>
+                </button></p>
+
+            <div class="table-controls">
+                <div class="entries-control">
+                    <span>Show</span>
+                    <select class="entries-select">
+                        <option>2</option>
+                        <option>5</option>
+                        <option>10</option>
+                    </select>
+                    <span>entries</span>
+                </div>
+                <div class="search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="search" placeholder="Search" class="search-input">
+                </div>
+            </div>
+
+            <table class="role-table">
+                <thead>
+                    <tr>
+                        <p align="right"><button class="delete-button">Delete All</button></p>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>นิสิต</td>
+                        <td>1 month ago</td>
+                        <td><button class="delete-button">Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>อาจารย์</td>
+                        <td>1 month ago</td>
+                        <td><button class="delete-button">Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <div class="pagination-info">Showing 1 to 2 of 2 entries</div>
+                <div class="pagination-controls">
+                    <button class="pagination-button">Previous</button>
+                    <span class="pagination-current">1</span>
+                    <button class="pagination-button">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script_sidebar&role.js"></script>
+</body>
+
+</html>

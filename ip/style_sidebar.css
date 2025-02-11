@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    /* ความกว้างของ Sidebar */
+    background-color: #FF6F00;
+    /* สีพื้นหลัง */
+    padding: 20px;
+    /* ระยะห่างภายใน Sidebar */
+    color: white;
+    /* สีข้อความ */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* จัดวางเนื้อหา */
+    border-top-right-radius: 30px;
+    /* มุมบนขวาโค้ง */
+    border-bottom-right-radius: 30px;
+    /* มุมล่างขวาโค้ง */
+    height: auto;
+    /* ความสูงปรับตามเนื้อหา */
+}
+
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+    color: #D6D6D6;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-item i {
+    margin-right: 18px;
+    font-size: 25px;
+}
+
+.nav-item {
+    margin-left: 10px;
+
+}
+
+.nav-item.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.3);
+
+}
+
+.nav-item.active {
+    position: relative;
+    /* กำหนดให้ตำแหน่งสัมพันธ์กับ pseudo-element */
+    color: white;
+    /* สีของข้อความ */
+}
+
+/* สร้างขีดขาวทางซ้าย */
+.nav-item.active::before {
+    content: "";
+    /* สร้าง pseudo-element */
+    position: absolute;
+    /* ใช้ตำแหน่งแบบ absolute */
+    left: 0;
+    /* ชิดด้านซ้าย */
+    top: 45%;
+    /* เว้นระยะจากด้านบน */
+    width: 5px;
+    /* ความกว้างของขีด */
+    height: 5px;
+    /* ความสูงของขีด (สัมพันธ์กับเนื้อหา) */
+    background-color: white;
+    /* สีขาว */
+    border-radius: 5px;
+    /* ทำให้ขอบมน */
+}
+
+
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropdown-menu.active {
+    display: flex;
+    margin-left: 30px;
+}
+
+.dropdown-toggle i:last-child {
+    margin-left: auto;
+    padding-left: 8px;
+    /* เพิ่มช่องว่างระหว่างข้อความกับลูกศร */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 70px;
+        padding: 10px 5px;
+        align-items: center;
+    }
+
+    .nav-item {
+        flex-direction: column;
+        padding: 8px;
+        text-align: center;
+    }
+
+    .nav-item span {
+        font-size: 10px;
+        margin-top: 5px;
+    }
+
+    .nav-item i {
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        flex-direction: row;
+        width: 100%;
+        height: 60px;
+        padding: 0 10px;
+        justify-content: space-around;
+    }
+
+    .nav-item {
+        flex-direction: column;
+        padding: 5px;
+    }
+
+    .nav-item span {
+        display: none;
+        /* Hide text labels */
+    }
+
+    .nav-item i {
+        font-size: 20px;
+    }
+}

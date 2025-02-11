@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logout</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600&display=swap"
+        rel="stylesheet" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style_home.css">
+    <link rel="stylesheet" href="style_sidebar&role.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Placeholder for Sidebar -->
+        <div id="sidebar-container"></div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal" id="reportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>ออกจากระบบ</span>
+            </div>
+            <div class="modal-body">
+                <label>คุณต้องการออกจากระบบหรือไม่</label>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeReportModal()">ยกเลิก</button>
+                <button class="confirm-btn">ออกจากระบบ</button>
+            </div>
+        </div>
+    </div>
+    <!-- External JavaScript -->
+    <script src="script_home.js"></script>
+    <script src="script_sidebar&role.js"></script>
+</body>
+
+</html>

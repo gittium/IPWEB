@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600&display=swap"
+        rel="stylesheet" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style_viewdetail.css">
+    <link rel="stylesheet" href="style_sidebar&role.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Placeholder for Sidebar -->
+        <div id="sidebar-container"></div>
+        <!-- Main Content -->
+        <div class="main-content">
+
+            <a href="Manageuser.html" class="back-link">
+                ← <span> Manage User</span>
+            </a>
+
+            <div class="info-row">
+                <div class="info-label">Name</div>
+                <div class="info-value">ณิชชา ศรีพันธุ์</div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-label">Field</div>
+                <div class="info-value">วิทยาการคอมพิวเตอร์</div>
+            </div>
+            <hr class="my-4">
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div class="profile-image"></div>
+                    <div class="profile-name">ณิชชา ศรีพันธุ์</div>
+                    <div class="profile-field">สาขา วิทยาการคอมพิวเตอร์</div>
+                </div>
+
+                <div class="details-section">
+                    <div class="detail-item">
+                        <div class="detail-label">Status</div>
+                        <div id="status" class="status available">
+                            <div class="status-dot"></div>
+                            <div class="status-text">Available</div>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Review</div>
+                        <div class="stars">★★★★☆</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <div class="detail-label">Achievements</div>
+                        <div style="color: #4CAF50;">5 Completed jobs</div>
+                    </div>
+
+                    <button id="toggleButton" class="toggle-button disable-button" onclick="toggleStatus()">
+                        Disable
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="script_viewdetail.js"></script>
+    <script src="script_sidebar&role.js"></script>
+</body>
+
+</html>

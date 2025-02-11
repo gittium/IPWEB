@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Permission</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600&display=swap"
+        rel="stylesheet" />
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style_sidebar&role.css">
+    <link rel="stylesheet" href="style_permission.css">
+</head>
+<body>
+    
+     <!-- Placeholder for Sidebar -->
+     <div id="sidebar-container"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="permission-container">
+            <div class="permission-header">
+                <h1 class="page-title">Permission</h1>
+                <div class="role-group">
+                    <span class="role-label">Role:</span>
+                    <select class="role-select">
+                        <option>อาจารย์</option>
+                        <option>นิสิต</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Jobs Posting Management -->
+            <div class="permission-group">
+                <h2 class="group-title">จัดการโพสงาน (Jobs Posting Management)</h2>
+                <div class="permission-list">
+                    <div class="permission-item">
+                        <span class="permission-name">สร้างโพสงานใหม่</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-item">
+                        <span class="permission-name">แก้ไขหรือลบโพสงานที่สร้าง</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-item">
+                        <span class="permission-name">ปิดการรับสมัครงาน</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Applications Management -->
+            <div class="permission-group">
+                <h2 class="group-title">จัดการการสมัครงาน (Applications Management)</h2>
+                <div class="permission-list">
+                    <div class="permission-item">
+                        <span class="permission-name">ดูรายชื่อนิสิตที่สมัครเข้าช่วยงาน</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="permission-item">
+                        <span class="permission-name">อนุมัติหรือปฏิเสธการสมัครของนิสิต</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Management -->
+            <div class="permission-group">
+                <h2 class="group-title">แก้ไขโปรไฟล์ (Edit Profile)</h2>
+                <div class="permission-list">
+                    <div class="permission-item">
+                        <span class="permission-name">แก้ไขข้อมูลส่วนตัวและข้อมูลการติดต่อ</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+            <!-- External JavaScript -->
+    <script src="script_sidebar&role.js"></script>
+    
+</body>
+</html>
