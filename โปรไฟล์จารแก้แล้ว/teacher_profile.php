@@ -223,6 +223,7 @@ $stmtJ->close();
                     </button>
 
                     <!-- Notifications card -->
+                    <!-- Notifications card -->
                     <div class="notifications-card" id="notifications">
                         <div class="headerNoti">
                             <h1 class="page-title">Notifications</h1>
@@ -232,13 +233,13 @@ $stmtJ->close();
                             <button class="close-button" id="close-notifications">&times;</button>
                         </div>
 
-                        <!-- แท็บกรองเฉพาะ All และ Unread -->
+                        <!-- Tabs for filtering notifications -->
                         <div class="tabs">
                             <div class="tab active" data-filter="all">All</div>
                             <div class="tab" data-filter="unread">Unread</div>
                         </div>
 
-                        <!-- กล่องเลื่อนขึ้นลงเมื่อมีมากกว่า 2 รายการ -->
+                        <!-- **Notification List (This will scroll if >2 items)** -->
                         <div class="notification-list" id="notification-list">
                             <?php foreach ($notifications as $notification) { ?>
                                 <a href="viewnotia.php?id=<?php echo $notification['id']; ?>" class="notification-item" data-status="<?php echo $notification['status']; ?>">
@@ -251,6 +252,7 @@ $stmtJ->close();
                             <?php } ?>
                         </div>
                     </div>
+
 
                     <!-- Add Job -->
                     <a href="jobpost.php">
@@ -293,10 +295,12 @@ $stmtJ->close();
         <div class="container">
             <div class="menu-review">
                 <h3>Job</h3>
-                <a href="review_student.php" class="btn-review">
+                <a href="reviewst.php?teachers_id=<?php echo urlencode($teacher['teachers_id']); ?>" class="btn-review">
                     review
                 </a>
+
             </div>
+
             <div class="content">
                 <div class="grid" id="job_container">
                     <?php foreach ($jobs as $job) { ?>
