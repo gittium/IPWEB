@@ -1,11 +1,51 @@
 <!-- Navbar Placeholder -->
 <style>
     /* ปรับแต่งแถบเมนูหลัก */
+
+
+    .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background-color: #ff7f27;
+        height: 250px;
+        width: 100%;
+    }
+
+    .box h2 {
+        font-size: 24px;
+    }
+
+    .typing-container {
+        font-size: 28px;
+        font-weight: bold;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cursor {
+        display: inline-block;
+        width: 3px;
+        height: 24px;
+        background: rgb(255, 255, 255);
+        animation: blink 0.7s infinite;
+        margin-left: 2px;
+    }
+
+    @keyframes blink {
+        50% {
+            opacity: 0;
+        }
+    }
+
     .nav-menu {
         display: flex;
         justify-content: center;
         align-items: center;
-
+        height: 280px;
     }
 
     .menu {
@@ -15,8 +55,12 @@
         width: 90%;
         max-width: 1800px;
         border-radius: 30px;
-        background-color: #ff7f27;
+        background-color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         margin-top: 20px;
+        top: 250px;
+        position: absolute;
+        z-index: 999; /* ให้สูงกว่าทุกเนื้อหาอื่น */
     }
 
     .first-menu {
@@ -40,14 +84,16 @@
     }
 
     .menu-item:hover {
-        color: white;
+        transform: translateY(-5px);
+        /* ลอยขึ้น 5px */
+        color: black;
     }
 
     /* Active State (หมวดหมู่ที่ถูกเลือก) */
     .menu-item.active {
-        background: #ff7f27;
-        color: white;
         border-radius: 10px;
+        color: #ff7f27;
+        background-color: white;
     }
 
     .menu-item.active::after {
@@ -55,7 +101,7 @@
         display: block;
         height: 4px;
         width: 80%;
-        background: white;
+        background: #ff7f27;
         position: absolute;
         bottom: -5px;
         left: 50%;
@@ -105,17 +151,7 @@
 
 
     /* ปรับขนาดของ sub-item */
-    .sub-item {
-        padding: 12px 20px;
-        height: 70px;
-        width: 250px;
-        font-size: 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        background: white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: 0.3s;
-    }
+
 
     /* เมื่อ Hover ที่ Sub Item */
     .sub-item:hover {
@@ -136,24 +172,17 @@
         text-transform: capitalize;
         border-radius: 8px;
         cursor: pointer;
-        background: white;
+        background: rgba(255, 255, 255, 0.9);
+        /* สีขาวโปร่งใส 90% */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         transition: 0.3s;
     }
 
-    /* เมื่อ Active */
-    .sub-item.active {
-        background: #ff5c00;
-        color: white;
-        transform: scale(1.05);
-        border: 2px solid white;
-        border-radius: 30px;
-    }
 
 
     /* Active State สำหรับหมวดหมู่ย่อย */
     .sub-item.active {
-        background:white;
+        background: white;
         color: #ff5c00;
         transform: scale(1.05);
         border: 2px solid white;
@@ -165,9 +194,45 @@
         display: flex;
         animation: fadeIn 0.3s ease-in-out;
     }
-
-
 </style>
+<div class="box">
+    <div class="typing-container">
+        <span id="changing-text"></span>
+        <span class="cursor"></span>
+    </div>
+</div>
+
+<script>
+    const words = ["ระบบจัดหางานและพัฒนาทักษะ CSIT"];
+    let wordIndex = 0;
+    let charIndex = 0;
+    let currentWord = "";
+    let isDeleting = false;
+
+    function typeEffect() {
+        currentWord = words[wordIndex];
+        let displayedText = currentWord.substring(0, charIndex);
+        document.getElementById("changing-text").textContent = displayedText;
+
+        if (!isDeleting && charIndex < currentWord.length) {
+            charIndex++;
+            setTimeout(typeEffect, 100);
+        } else if (isDeleting && charIndex > 0) {
+            charIndex--;
+            setTimeout(typeEffect, 50);
+        } else {
+            isDeleting = !isDeleting;
+            if (!isDeleting) {
+                wordIndex = (wordIndex + 1) % words.length;
+            }
+            setTimeout(typeEffect, 1000);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        setTimeout(typeEffect, 1000);
+    });
+</script>
 <div class="nav-menu">
     <div class="menu">
         <!-- หมวดหมู่หลัก -->
@@ -193,7 +258,7 @@
                     echo '<a href="view_all_jobs.php?subcategory_id=' . htmlspecialchars($sub['job_sub_id']) . '" 
                             class="sub-item" 
                             id="subitem-' . htmlspecialchars($sub['job_sub_id']) . '">'
-                        . htmlspecialchars($sub['subcategories_name']) . 
+                        . htmlspecialchars($sub['subcategories_name']) .
                         '</a>';
                 }
                 echo '</div>';
@@ -228,7 +293,7 @@
         localStorage.setItem('activeCategory', categoryId);
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function() {
         // ✅ ดึงค่า `subcategory_id` จาก URL
         let urlParams = new URLSearchParams(window.location.search);
         let subcategoryId = urlParams.get('subcategory_id');
