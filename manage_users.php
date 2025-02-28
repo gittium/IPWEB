@@ -10,7 +10,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 
 // ตรวจสอบการเชื่อมต่อ
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die(json_encode(['success' => false, 'error' => 'Database connection failed: ' . $conn->connect_error]));
 }
 
 // รับค่าหน้าปัจจุบัน
@@ -64,47 +64,31 @@ if ($role == "all") {
 
 // ** ตรวจสอบการอัปเดตสถานะ (Disable / Activate) ผ่าน AJAX **
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['user_id']) && isset($_POST['status'])) {
-    $user_id = $_POST['user_id'];
-    $status = (int) $_POST['status']; // แปลงเป็น integer
+    header('Content-Type: application/json');
 
-    // เชื่อมต่อฐานข้อมูล
-    $conn = new mysqli("localhost", "root", "", "ip2");
+    $user_id = $conn->real_escape_string($_POST['user_id']);
+    $status = (int) $_POST['status'];
 
-    // เช็คว่ามีปัญหากับการเชื่อมต่อฐานข้อมูลหรือไม่
-    if ($conn->connect_error) {
-        die(json_encode(['success' => false, 'error' => 'Database connection failed: ' . $conn->connect_error]));
-    }
-
-    // อัปเดตฐานข้อมูล
     $sql = "UPDATE user SET role_status_id = ? WHERE user_id = ?";
     $stmt = $conn->prepare($sql);
-    
+
     if ($stmt === false) {
         echo json_encode(['success' => false, 'error' => 'Prepare failed: ' . $conn->error]);
         exit;
     }
 
     $stmt->bind_param("is", $status, $user_id);
-    $response = [];
 
     if ($stmt->execute()) {
-        $response['success'] = true;
+        echo json_encode(['success' => true, 'new_status' => $status]);
     } else {
-        $response['success'] = false;
-        $response['error'] = $stmt->error;
+        echo json_encode(['success' => false, 'error' => $stmt->error]);
     }
 
     $stmt->close();
     $conn->close();
-
-    // บอกให้ browser รู้ว่าเป็น JSON
-    header('Content-Type: application/json');
-    echo json_encode($response);
     exit;
 }
-
-
-
 $result = $conn->query($sql);
 ?>
 
@@ -246,42 +230,43 @@ $result = $conn->query($sql);
             </tr>
         </thead>
         <tbody>
-        <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr>
-                <td><?= $row['name']; ?></td>
-                <td><a href="mailto:<?= $row['email']; ?>"><?= $row['email']; ?></a></td>
-                <td>
-                    <?= $row['role_status_id'] == 1 ? '<span style="color:green;">Available</span>' : '<span style="color:red;">Unavailable</span>'; ?>
-                </td>
-                <td style="display: flex; justify-content: center; align-items: center; gap: 40px;">
-                <?php if ($row['role_id'] == 4) { ?>
-        <a href="admin_student_profile.php?id=<?= $row['user_id']; ?>" class="view-link"
-            style="text-decoration: none; padding: 8px 15px; background-color: #007bff; color: white; border-radius: 8px;">
-            View
-        </a>
-    <?php } else { ?>
-        <a href="admin_teacher_profile.php?teachers_id=<?= $row['user_id']; ?>" class="view-link"
-            style="text-decoration: none; padding: 8px 15px; background-color: #007bff; color: white; border-radius: 8px;">
-            View
-        </a>
-    <?php } ?>
-
-
-                    <?php if ($row['role_status_id'] == 1) { ?>
-                        <button class="status-btn" data-id="<?= $row['user_id']; ?>" data-status="2" 
-                            style="background-color: rgba(255, 0, 0, 0.7); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, transform 0.2s;">
-                            Disable
-                        </button>
-                    <?php } else { ?>
-                        <button class="status-btn" data-id="<?= $row['user_id']; ?>" data-status="1" 
-                            style="background-color: rgba(0, 128, 0, 0.7); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, transform 0.2s;">
-                            Activate
-                        </button>
-                    <?php } ?>
-                </td>
-            </tr>
+    <?php while ($row = $result->fetch_assoc()) { ?>
+        <tr>
+    <td><?= $row['name']; ?></td>
+    <td><a href="mailto:<?= $row['email']; ?>"><?= $row['email']; ?></a></td>
+    <td class="status-text">
+        <?= $row['role_status_id'] == 1 ? '<span style="color:green;">Available</span>' : '<span style="color:red;">Unavailable</span>'; ?>
+    </td>
+    <td style="display: flex; justify-content: center; align-items: center; gap: 40px;">
+        <?php if ($row['role_id'] == 4) { ?>
+            <a href="admin_student_profile.php?id=<?= $row['user_id']; ?>" class="view-link"
+                style="text-decoration: none; padding: 8px 15px; background-color: #007bff; color: white; border-radius: 8px;">
+                View
+            </a>
+        <?php } else { ?>
+            <a href="admin_teacher_profile.php?teachers_id=<?= $row['user_id']; ?>" class="view-link"
+                style="text-decoration: none; padding: 8px 15px; background-color: #007bff; color: white; border-radius: 8px;">
+                View
+            </a>
         <?php } ?>
-    </tbody>
+
+        <?php if ($row['role_status_id'] == 1) { ?>
+            <button class="status-btn" data-id="<?= $row['user_id']; ?>" data-status="2" 
+                style="background-color: rgba(255, 0, 0, 0.7); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, transform 0.2s;">
+                Disable
+            </button>
+        <?php } else { ?>
+            <button class="status-btn" data-id="<?= $row['user_id']; ?>" data-status="1" 
+                style="background-color: rgba(0, 128, 0, 0.7); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s, transform 0.2s;">
+                Activate
+            </button>
+        <?php } ?>
+    </td>
+</tr>
+
+    <?php } ?>
+</tbody>
+
     </table>
 
     <!-- Pagination -->
@@ -305,13 +290,77 @@ $result = $conn->query($sql);
         </main>
     </div>
     </div>
-
-    <script src="js/script_manage_users.js"></script>
     <script src="script_sidebar&role.js"></script>
 </body>
 
 </html>
 
+<script> 
+document.addEventListener("DOMContentLoaded", function () {
+    // เมื่อเลือก role ใน dropdown
+    document.getElementById("roleSelect").addEventListener("change", function () {
+        let role = this.value;
+        window.location.href = "manage_users.php?role=" + role;
+    });
 
+    // ฟังก์ชันอัปเดตสถานะ (Disable/Activate)
+    function updateStatus(userId, status, button) {
+        fetch("manage_users.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `user_id=${userId}&status=${parseInt(status)}`
+        })
+        .then(response => response.json()) // รับค่าเป็น JSON ทันที
+        .then(data => {
+            if (data.success) {
+                alert("สถานะอัปเดตสำเร็จ!");
+
+                // ค้นหาแถวของผู้ใช้ที่มี user_id ตรงกัน
+                let row = document.querySelector(`button[data-id='${userId}']`).closest("tr");
+
+                if (row) {
+                    // อัปเดตข้อความสถานะใน <td class="status-text">
+                    let statusText = row.querySelector(".status-text span");
+                    if (statusText) {
+                        if (data.new_status == 1) {
+                            statusText.textContent = "Available";
+                            statusText.style.color = "green";
+                        } else {
+                            statusText.textContent = "Unavailable";
+                            statusText.style.color = "red";
+                        }
+                    }
+
+                    // อัปเดตปุ่มกด
+                    let newStatus = data.new_status == 1 ? "2" : "1";
+                    button.setAttribute("data-status", newStatus);
+                    button.textContent = newStatus === "1" ? "Activate" : "Disable";
+                    button.style.backgroundColor = newStatus === "1" ? "rgba(0, 128, 0, 0.7)" : "rgba(255, 0, 0, 0.7)";
+                }
+            } else {
+                alert("Error updating status: " + (data.error || "Unknown error"));
+            }
+        })
+        .catch(error => console.error("Fetch error:", error));
+    }
+
+    // ใช้ Event Delegation เพื่อตรวจจับการคลิกที่ปุ่ม Disable / Activate
+    document.body.addEventListener("click", function (event) {
+        if (event.target.classList.contains("status-btn")) {
+            let userId = event.target.getAttribute("data-id");
+            let status = event.target.getAttribute("data-status");
+
+            if (!userId || !status) {
+                alert("เกิดข้อผิดพลาด: ไม่พบข้อมูล UserID หรือ Status");
+                return;
+            }
+
+            updateStatus(userId, status, event.target);
+        }
+    });
+
+});
+
+            </script>
 
 <?php $conn->close(); ?>
