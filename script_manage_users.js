@@ -32,4 +32,26 @@ document.addEventListener("DOMContentLoaded", function () {
             updateStatus(userId, status);
         }
     });
+
+    
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".status-btn").forEach((btn) => {
+            btn.addEventListener("mouseenter", function () {
+                if (this.dataset.status === "2") {
+                    this.style.backgroundColor = "rgba(255, 0, 0, 0.9)"; // สีแดงเข้มขึ้น
+                } else {
+                    this.style.backgroundColor = "rgba(0, 128, 0, 0.9)"; // สีเขียวเข้มขึ้น
+                }
+            });
+    
+            btn.addEventListener("mouseleave", function () {
+                if (this.dataset.status === "2") {
+                    this.style.backgroundColor = "rgba(255, 0, 0, 0.7)"; // สีแดงโปร่งใสขึ้น
+                } else {
+                    this.style.backgroundColor = "rgba(0, 128, 0, 0.7)"; // สีเขียวโปร่งใสขึ้น
+                }
+            });
+        });
+    });
+    
 });

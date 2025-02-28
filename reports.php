@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root"; // แก้เป็น username ของ MySQL
 $password = ""; // แก้เป็น password ของ MySQL
-$dbname = "ip"; // แก้เป็นชื่อฐานข้อมูลที่ใช้งาน
+$dbname = "ip2"; // แก้เป็นชื่อฐานข้อมูลที่ใช้งาน
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
@@ -14,10 +14,17 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     $post_id = $_GET['id'];
 
     // ดึงข้อมูลโพสต์ที่ถูกรีพอร์ต
-    $sql = "SELECT post_jobs.title, post_jobs.description, teachers.name AS teacher_name, teachers.email 
-            FROM post_jobs
-            JOIN teachers ON post_jobs.teacher_id = teachers.id
-            WHERE post_jobs.id = ?";
+    $sql = "SELECT post_jobs.title, post_jobs.reward_type_id, post_jobs.description, post_jobs.created_at, 
+    post_jobs.number_student, post_jobs.job_categories_id, post_jobs.teachers_id, post_jobs.job_status_id, 
+    post_jobs.image, teachers.name AS teacher_name, teachers.email, 
+    job_categories.categories_name, job_status.job_status_name, reward_type.reward_name
+    FROM post_jobs
+    JOIN teachers ON post_jobs.teachers_id = teachers.teachers_id
+    JOIN job_categories ON post_jobs.job_categories_id = job_categories.job_categories_id
+    JOIN job_status ON post_jobs.job_status_id = job_status.job_status_id
+    JOIN reward_type ON post_jobs.reward_type_id = reward_type.reward_type_id
+    WHERE post_jobs.post_jobs_id = ?";
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $post_id);
     $stmt->execute();
@@ -28,34 +35,110 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     }
 
     $post = $result->fetch_assoc();
+
+    // ตั้งค่า BASE_URL สำหรับรูปภาพ
+    $base_url = "http://localhost/P5/Admin/"; // ต้องแก้ให้ตรงกับเซิร์ฟเวอร์จริง
+    $image_path = !empty($post['image']) ? $base_url . "images/" . htmlspecialchars($post['image']) : $base_url . "images/img1.jpg";
     ?>
 
-    <!DOCTYPE html>
-    <html lang="th">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Post Detail</title>
-        <link rel="stylesheet" href="style_reports.css">
-        <link rel="stylesheet" href="style_sidebar&role.css">
-    </head>
-    <body>
-        <div class="container">
-            <div id="sidebar-container"></div>
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Detail</title>
+     <!-- Google Fonts -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@600&display=swap"
+        rel="stylesheet" />
 
-            <main class="main-contentt">
-                <div class="content">
-                    <h1><?php echo htmlspecialchars($post['title']); ?></h1>
-                    <p><strong>อาจารย์ผู้โพสต์:</strong> <?php echo htmlspecialchars($post['teacher_name']); ?> (<?php echo htmlspecialchars($post['email']); ?>)</p>
-                    <hr>
-                    <p><?php echo nl2br(htmlspecialchars($post['description'])); ?></p>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style_reports.css">
+    <link rel="stylesheet" href="style_sidebar&role.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .main-content {
+            width: 60%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .post-image-container {
+            display: flex;
+            justify-content: center; 
+            align-items: center;
+            width: auto; max-width: 100%;
+            margin-bottom: 50px;
+            margin-top:1000px;
+            overflow: hidden;
+        }
+        .post-image {
+            height: auto;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .post-section {
+            background: #eef2f7;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: left;
+            margin: auto;
+            width: 75%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+        .post-meta {
+            width: 60%;
+            text-align: left;
+            margin-bottom: 40px;
+        }
+        .post-meta p {
+            font-size: 16px;
+            color: #333;
+            margin: 5px 0;
+        }
+        .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
 
-                    <a href="reports.php" class="btn-back">Back to Reports</a>
-                </div>
-            </main>
-        </div>
-    </body>
-    </html>
+        }
+        .btn-back {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .btn-back:hover {
+            background: #0056b3;
+        }
+    </style>
+
+</head>
+
+</html>
+
+
 
     <?php
     exit(); // จบการทำงานหลังจากแสดงโพสต์ที่ถูกรีพอร์ต
@@ -67,12 +150,13 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 5;
 $offset = ($page - 1) * $limit;
 
-// ดึงข้อมูลรีพอร์ต
-$sql = "SELECT reports.id, reports.post_id, students.name AS reporter_name, post_jobs.title 
+// ดึงข้อมูลเฉพาะรีพอร์ตที่มีสถานะ `pending`
+$sql = "SELECT reports.reports_id, reports.post_jobs_id, students.name AS reporter_name, post_jobs.title 
         FROM reports 
-        JOIN students ON reports.reporter_id = students.id
-        JOIN post_jobs ON reports.post_id = post_jobs.id
-        WHERE students.name LIKE ? OR post_jobs.title LIKE ?
+        JOIN students ON reports.user_id = students.students_id
+        JOIN post_jobs ON reports.post_jobs_id = post_jobs.post_jobs_id
+        WHERE (students.name LIKE ? OR post_jobs.title LIKE ?)
+        AND reports.report_status_id = 1
         LIMIT ?, ?";
 $stmt = $conn->prepare($sql);
 $search_param = "%$search%";
@@ -85,11 +169,12 @@ while ($row = $result->fetch_assoc()) {
     $reports[] = $row;
 }
 
-// นับจำนวนรีพอร์ตทั้งหมด
+// นับจำนวนรีพอร์ตทั้งหมดที่มีสถานะ `pending`
 $sql_count = "SELECT COUNT(*) AS total FROM reports 
-              JOIN students ON reports.reporter_id = students.id
-              JOIN post_jobs ON reports.post_id = post_jobs.id
-              WHERE students.name LIKE ? OR post_jobs.title LIKE ?";
+              JOIN students ON reports.user_id = students.students_id
+              JOIN post_jobs ON reports.post_jobs_id = post_jobs.post_jobs_id
+              WHERE (students.name LIKE ? OR post_jobs.title LIKE ?)
+              AND reports.report_status_id = 1";
 $stmt_count = $conn->prepare($sql_count);
 $stmt_count->bind_param("ss", $search_param, $search_param);
 $stmt_count->execute();
@@ -97,19 +182,42 @@ $count_result = $stmt_count->get_result();
 $total = $count_result->fetch_assoc()['total'];
 $totalPages = ceil($total / $limit);
 
-// ลบรีพอร์ต
+
+//รีพอร์ต
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $delete_id = $_POST['delete_id'];
-    $delete_sql = "DELETE FROM reports WHERE id = ?";
-    $delete_stmt = $conn->prepare($delete_sql);
-    $delete_stmt->bind_param("i", $delete_id);
-    if ($delete_stmt->execute()) {
-        header("Location: reports.php?search=$search&page=$page");
-        exit();
-    } else {
-        echo "<script>alert('Failed to delete report.');</script>";
+
+    // ดึง post_id ที่ถูกรีพอร์ตออกมาก่อน
+    $get_post_sql = "SELECT post_jobs_id FROM reports WHERE reports_id = ?";
+    $get_post_stmt = $conn->prepare($get_post_sql);
+    $get_post_stmt->bind_param("i", $delete_id);
+    $get_post_stmt->execute();
+    $post_result = $get_post_stmt->get_result();
+    
+    if ($post_result->num_rows > 0) {
+        $post_data = $post_result->fetch_assoc();
+        $post_id = $post_data['post_jobs_id'];
+
+        // อัปเดตสถานะของโพสต์เป็น `delete` (3)
+        $update_post_sql = "UPDATE post_jobs SET job_status_id = 3 WHERE post_jobs_id = ?";
+        $update_post_stmt = $conn->prepare($update_post_sql);
+        $update_post_stmt->bind_param("i", $post_id);
+        
+        // อัปเดตสถานะของรีพอร์ตเป็น `closed` (2)
+        $update_report_sql = "UPDATE reports SET report_status_id = 2 WHERE reports_id = ?";
+        $update_report_stmt = $conn->prepare($update_report_sql);
+        $update_report_stmt->bind_param("i", $delete_id);
+
+        // ตรวจสอบว่าอัปเดตสำเร็จหรือไม่
+        if ($update_post_stmt->execute() && $update_report_stmt->execute()) {
+            header("Location: reports.php?search=$search&page=$page");
+            exit();
+        } else {
+            echo "<script>alert('Failed to update post and report status.');</script>";
+        }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -128,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
         rel="stylesheet" />
 
     <!-- External CSS -->
-    <link rel="stylesheet" href="style_reports.css">
+    <link rel="stylesheet" href="css/style_reports.css">
     <link rel="stylesheet" href="style_sidebar&role.css">
 </head>
 <body>
@@ -147,33 +255,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
                 </form>
                 
                 <div class="table-wrapper">
-                    <table aria-label="Reports Table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Reporter</th>
-                                <th scope="col">Post</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($reports as $report): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($report['reporter_name']); ?></td>
-                                <td><?php echo htmlspecialchars($report['title']); ?></td>
-                                <td>
-                                    <div class="actions">
-                                        <button class="view-btn" onclick="viewPost(<?php echo $report['post_id']; ?>)">View</button>
-                                        <form method="POST" style="display:inline;">
-                                            <input type="hidden" name="delete_id" value="<?php echo $report['id']; ?>">
-                                            <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this report?');">Delete</button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+    <table aria-label="Reports Table">
+        <thead>
+            <tr>
+                <th scope="col">Reporter</th>
+                <th scope="col">Post</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (count($reports) > 0): ?>
+                <?php foreach ($reports as $report): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($report['reporter_name']); ?></td>
+                    <td><?php echo htmlspecialchars($report['title']); ?></td>
+                    <td>
+                        <div class="actions">
+                        <a href="joinustest.php?id=<?php echo htmlspecialchars($report['post_jobs_id']); ?>" class="view-btn">View</a>
+        <form method="POST" style="display:inline;">
+                                <input type="hidden" name="delete_id" value="<?php echo $report['reports_id']; ?>">
+                                <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to process this report?');">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr><td colspan="3" style="text-align: center;">No pending reports found.</td></tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
 
                 <div class="pagination">
                     <span>Showing <?php echo ($offset + 1) . " to " . min($offset + $limit, $total) . " of $total entries"; ?></span>
@@ -196,10 +309,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
 
     <script>
         function viewPost(postId) {
-            window.location.href = `reports.php?id=${postId}`;
+            window.location.href = `joinustest.php?id=${postId}`;
         }
     </script>
      <script src="script_sidebar&role.js"></script>
-     <script src="script_reports.js"></script>
+     <script src="js/script_reports.js"></script>
 </body>
 </html>

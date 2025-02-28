@@ -55,14 +55,20 @@ function backToReports() {
     document.querySelector(".content").classList.remove("hidden");
 }
 
+
 function deleteReport(reportId) {
-    if (!confirm("Are you sure you want to delete this report?")) return;
+    if (!confirm("Are you sure you want to close this report and mark the post as deleted?")) return;
 
     fetch(`reports.php`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `delete_id=${reportId}`
     })
-    .then(() => loadReports());
+    .then(response => response.text())
+    .then(() => {
+        alert("Report closed and post marked as deleted.");
+        location.reload(); // รีโหลดหน้าใหม่เพื่ออัปเดต UI
+    })
+    .catch(error => console.error("Error:", error));
 }
 
