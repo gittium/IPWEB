@@ -6,18 +6,20 @@ $user_id = $_SESSION['user_id'] ?? null;
 // รวมไฟล์คำนวณรีวิว
 include 'calculate_review.php';
 
-// ถ้าเป็น POST (อัปโหลดรูป profile หรือ อัปเดตข้อมูลอื่นๆ)
+// ถ้าเป็น POST (อัปโหลดรูปโปรไฟล์ หรือ อัปเดตข้อมูลอื่นๆ)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // หากมีการส่งไฟล์รูป (Profile Image Upload)
+    // หากมีการส่งไฟล์รูปโปรไฟล์ (Profile Image Upload)
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = 'profile/'; // โฟลเดอร์เป้าหมาย
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0777, true); // สร้างโฟลเดอร์หากไม่มี
         }
         $fileTmpPath = $_FILES['profile_image']['tmp_name'];
         $fileName = basename($_FILES['profile_image']['name']);
         $fileNameNew = uniqid('profile_', true) . "_" . $fileName;
         $fileDest = $uploadDir . $fileNameNew;
+        
+        // ถ้าย้ายไฟล์สำเร็จ
         if (move_uploaded_file($fileTmpPath, $fileDest)) {
             $sqlUpdateProfile = "UPDATE student SET profile = ? WHERE student_id = ?";
             $stmtProfile = $conn->prepare($sqlUpdateProfile);
@@ -27,11 +29,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo "upload_failed";
         }
+        // ปิดการเชื่อมต่อฐานข้อมูลหลังจากอัปโหลดเสร็จ
         $conn->close();
         exit();
     }
-    // ส่วนอัปเดตข้อมูลอื่นๆ (เช่น skills, hobby, about) – ส่วนนี้คุณสามารถเพิ่มโค้ดอัปเดตในไฟล์ update_profile.php ได้
+
+    // ส่วนอัปเดตข้อมูล skills และ hobbies
+    $selectedSkills = isset($_POST['selectedSkills']) ? explode(',', $_POST['selectedSkills']) : [];
+    $selectedHobbies = isset($_POST['selectedHobbies']) ? explode(',', $_POST['selectedHobbies']) : [];
+
+    // อัปเดตข้อมูล skills และ hobbies
+    $success = updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbies);
+
+    // ส่งผลลัพธ์กลับไปยัง JavaScript
+    echo json_encode(["success" => $success]);
+    exit();
 }
+
+// ฟังก์ชันอัปเดต skills และ hobbies
+function updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbies)
+{
+    // เริ่มต้นการทำงานกับฐานข้อมูล
+    $conn->begin_transaction();
+
+    try {
+        // 1. ลบข้อมูล skills เดิมที่เกี่ยวข้องกับนิสิต
+        $delete_skills_sql = "DELETE FROM student_skill WHERE student_id = ?";
+        $stmt = $conn->prepare($delete_skills_sql);
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+
+        // 2. อัปเดต skills ที่เลือกใหม่
+        foreach ($selectedSkills as $skillData) {
+            list($skill_id, $subskill_id) = explode("-", $skillData);
+            $insert_skill_sql = "INSERT INTO student_skill (student_id, skill_id, subskill_id) VALUES (?, ?, ?)";
+            $stmt = $conn->prepare($insert_skill_sql);
+            $stmt->bind_param("sii", $user_id, $skill_id, $subskill_id);
+            $stmt->execute();
+        }
+
+        // 3. ลบข้อมูล hobbies เดิมที่เกี่ยวข้องกับนิสิต
+        $delete_hobbies_sql = "DELETE FROM student_hobby WHERE student_id = ?";
+        $stmt = $conn->prepare($delete_hobbies_sql);
+        $stmt->bind_param("s", $user_id);
+        $stmt->execute();
+
+        // 4. อัปเดต hobbies ที่เลือกใหม่
+        foreach ($selectedHobbies as $hobbyData) {
+            list($hobby_id, $subhobby_id) = explode("-", $hobbyData);
+            $insert_hobby_sql = "INSERT INTO student_hobby (student_id, hobby_id, subhobby_id) VALUES (?, ?, ?)";
+            $stmt = $conn->prepare($insert_hobby_sql);
+            $stmt->bind_param("sii", $user_id, $hobby_id, $subhobby_id);
+            $stmt->execute();
+        }
+
+        // หากไม่มีข้อผิดพลาด ให้ทำการ commit ข้อมูล
+        $conn->commit();
+        return true;
+    } catch (Exception $e) {
+        // หากเกิดข้อผิดพลาดใด ๆ ให้ทำการ rollback ข้อมูล
+        $conn->rollback();
+        return false;
+    }
+}
+
 
 // ถ้ามีการส่งค่าผ่าน URL (GET) สำหรับอัปเดตสถานะแจ้งเตือน
 if (isset($_GET['id'])) {
@@ -84,7 +145,6 @@ function getNotifications($conn, $user_id)
     return $notifications;
 }
 $notifications = getNotifications($conn, $user_id);
-
 
 // ดึงข้อมูลนักศึกษา
 $sql = "
@@ -276,7 +336,7 @@ $hobby_list_display = implode("<br>", $hobby_display);
                         <div class="review-detail">
                             <div class="stars">
                                 <?php for ($i = 1; $i <= 5; $i++) {
-                                    echo ($i <=$calculation['avg_rating']) ? '★' : '☆';
+                                    echo ($i <= $calculation['avg_rating']) ? '★' : '☆';
                                 } ?>
                             </div>
                             <small>from <?php echo $calculation['total_groups']; ?> people</small>
@@ -418,384 +478,390 @@ $hobby_list_display = implode("<br>", $hobby_display);
 
     <!-- JavaScript สำหรับ Notifications, Edit, และ Save -->
     <script>
-    // Notifications & Filtering (เหมือนเดิม)
-    document.addEventListener("DOMContentLoaded", function() {
-        const tabs = document.querySelectorAll(".tab");
-        const notificationList = document.getElementById("notification-list");
-        const notificationBadge = document.querySelector(".notification-badge");
-        const notificationCount = document.querySelector(".notification-count");
+        // Notifications & Filtering (เหมือนเดิม)
+        document.addEventListener("DOMContentLoaded", function() {
+            const tabs = document.querySelectorAll(".tab");
+            const notificationList = document.getElementById("notification-list");
+            const notificationBadge = document.querySelector(".notification-badge");
+            const notificationCount = document.querySelector(".notification-count");
 
-        function fetchNotifications(filterType) {
-            fetch(window.location.href)
-                .then(response => response.text())
-                .then(html => {
-                    let parser = new DOMParser();
-                    let doc = parser.parseFromString(html, "text/html");
-                    let notifications = JSON.parse(doc.getElementById("notifications-data").textContent);
-                    updateNotifications(notifications, filterType);
-                })
-                .catch(error => console.error("Error fetching notifications:", error));
-        }
+            function fetchNotifications(filterType) {
+                fetch(window.location.href)
+                    .then(response => response.text())
+                    .then(html => {
+                        let parser = new DOMParser();
+                        let doc = parser.parseFromString(html, "text/html");
+                        let notifications = JSON.parse(doc.getElementById("notifications-data").textContent);
+                        updateNotifications(notifications, filterType);
+                    })
+                    .catch(error => console.error("Error fetching notifications:", error));
+            }
 
-        function updateNotifications(notifications, filterType) {
-            notificationList.innerHTML = "";
-            let unreadCount = 0;
-            notifications.forEach((notification) => {
-                if (filterType === "all" ||
-                    (filterType === "unread" && notification.status === "unread") ||
-                    (filterType === "accepted" && notification.title === "Accepted") ||
-                    (filterType === "reject" && notification.title === "Rejected")) {
-                    const notificationItem = document.createElement("div");
-                    notificationItem.classList.add("notification-item", notification.status);
-                    notificationItem.setAttribute("data-status", notification.status);
-                    notificationItem.setAttribute("data-id", notification.id);
-                    notificationItem.innerHTML = `
+            function updateNotifications(notifications, filterType) {
+                notificationList.innerHTML = "";
+                let unreadCount = 0;
+                notifications.forEach((notification) => {
+                    if (filterType === "all" ||
+                        (filterType === "unread" && notification.status === "unread") ||
+                        (filterType === "accepted" && notification.title === "Accepted") ||
+                        (filterType === "reject" && notification.title === "Rejected")) {
+                        const notificationItem = document.createElement("div");
+                        notificationItem.classList.add("notification-item", notification.status);
+                        notificationItem.setAttribute("data-status", notification.status);
+                        notificationItem.setAttribute("data-id", notification.id);
+                        notificationItem.innerHTML = `
                     <div class="notification-content">
                         <h3 class="notification-title">${notification.title}</h3>
                         <p class="notification-message">${notification.message}</p>
                         <span class="notification-time">${notification.time}</span>
                     </div>
                 `;
-                    notificationItem.addEventListener("click", function(e) {
-                        e.preventDefault();
-                        markAsRead(notification.id);
-                        setTimeout(function() {
-                            window.location.href = "viewnoti.php?id=" + notification.id;
-                        }, 100);
-                    });
-                    if (notification.status === "unread") {
-                        unreadCount++;
+                        notificationItem.addEventListener("click", function(e) {
+                            e.preventDefault();
+                            markAsRead(notification.id);
+                            setTimeout(function() {
+                                window.location.href = "viewnoti.php?id=" + notification.id;
+                            }, 100);
+                        });
+                        if (notification.status === "unread") {
+                            unreadCount++;
+                        }
+                        notificationList.appendChild(notificationItem);
                     }
-                    notificationList.appendChild(notificationItem);
+                });
+                if (unreadCount > 0) {
+                    notificationBadge.innerText = unreadCount;
+                    notificationBadge.style.display = "inline-block";
+                    notificationCount.innerText = `${unreadCount} new`;
+                    notificationCount.style.display = "inline-block";
+                } else {
+                    notificationBadge.style.display = "none";
+                    notificationCount.style.display = "none";
                 }
-            });
-            if (unreadCount > 0) {
-                notificationBadge.innerText = unreadCount;
-                notificationBadge.style.display = "inline-block";
-                notificationCount.innerText = `${unreadCount} new`;
-                notificationCount.style.display = "inline-block";
-            } else {
-                notificationBadge.style.display = "none";
-                notificationCount.style.display = "none";
             }
-        }
 
-        function markAsRead(notificationId) {
-            fetch(`?id=${notificationId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log("Notification marked as read:", notificationId);
-                        let notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
-                        if (notificationItem) {
-                            let activeTab = document.querySelector(".tab.active").getAttribute("data-filter");
-                            if (activeTab === "unread") {
-                                notificationItem.remove();
-                            } else {
-                                notificationItem.dataset.status = "read";
-                                notificationItem.classList.remove("unread");
-                                notificationItem.classList.add("read");
+            function markAsRead(notificationId) {
+                fetch(`?id=${notificationId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log("Notification marked as read:", notificationId);
+                            let notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                            if (notificationItem) {
+                                let activeTab = document.querySelector(".tab.active").getAttribute("data-filter");
+                                if (activeTab === "unread") {
+                                    notificationItem.remove();
+                                } else {
+                                    notificationItem.dataset.status = "read";
+                                    notificationItem.classList.remove("unread");
+                                    notificationItem.classList.add("read");
+                                }
+                            }
+                            let currentCount = parseInt(notificationBadge.innerText) || 0;
+                            if (currentCount > 0) {
+                                currentCount--;
+                                notificationBadge.innerText = currentCount;
+                                notificationCount.innerText = `${currentCount} new`;
+                                if (currentCount === 0) {
+                                    notificationBadge.style.display = "none";
+                                    notificationCount.style.display = "none";
+                                }
                             }
                         }
-                        let currentCount = parseInt(notificationBadge.innerText) || 0;
-                        if (currentCount > 0) {
-                            currentCount--;
-                            notificationBadge.innerText = currentCount;
-                            notificationCount.innerText = `${currentCount} new`;
-                            if (currentCount === 0) {
-                                notificationBadge.style.display = "none";
-                                notificationCount.style.display = "none";
-                            }
-                        }
-                    }
-                })
-                .catch(error => console.error("Error updating notification:", error));
-        }
+                    })
+                    .catch(error => console.error("Error updating notification:", error));
+            }
 
-        tabs.forEach(tab => {
-            tab.addEventListener("click", function() {
-                tabs.forEach(t => t.classList.remove("active"));
-                this.classList.add("active");
-                const filterType = this.getAttribute("data-filter");
-                fetchNotifications(filterType);
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function() {
+                    tabs.forEach(t => t.classList.remove("active"));
+                    this.classList.add("active");
+                    const filterType = this.getAttribute("data-filter");
+                    fetchNotifications(filterType);
+                });
             });
+            fetchNotifications("all");
         });
-        fetchNotifications("all");
-    });
 
-    const notificationButton = document.querySelector('.notification-btn');
-    const notificationsCard = document.getElementById('notifications');
-    const closeButton = document.getElementById('close-notifications');
-    notificationButton.addEventListener('click', () => {
-        notificationsCard.style.display = 'block';
-    });
-    closeButton.addEventListener('click', () => {
-        notificationsCard.style.display = 'none';
-    });
-    document.addEventListener('click', (event) => {
-        if (!notificationsCard.contains(event.target) && !notificationButton.contains(event.target)) {
+        const notificationButton = document.querySelector('.notification-btn');
+        const notificationsCard = document.getElementById('notifications');
+        const closeButton = document.getElementById('close-notifications');
+        notificationButton.addEventListener('click', () => {
+            notificationsCard.style.display = 'block';
+        });
+        closeButton.addEventListener('click', () => {
             notificationsCard.style.display = 'none';
-        }
-    });
-
-    // Toggle Edit Mode สำหรับ Skills และ Hobby
-    function toggleEdit() {
-        const skillsDisplay = document.getElementById('skills_text_display');
-        const skillsEdit = document.getElementById('skills_checkbox_list');
-        const skillsSearchContainer = document.getElementById('skills_search_container');
-
-        const hobbyDisplay = document.getElementById('hobby_text_display');
-        const hobbyEdit = document.getElementById('hobby_checkbox_list');
-        const hobbySearchContainer = document.getElementById('hobby_search_container');
-
-        // Toggle skills
-        if (skillsDisplay.style.display !== "none") {
-            skillsDisplay.style.display = "none";
-            skillsEdit.style.display = "block";
-            skillsSearchContainer.style.display = "block";
-        } else {
-            skillsDisplay.style.display = "block";
-            skillsEdit.style.display = "none";
-            skillsSearchContainer.style.display = "none";
-        }
-
-        // Toggle hobby
-        if (hobbyDisplay.style.display !== "none") {
-            hobbyDisplay.style.display = "none";
-            hobbyEdit.style.display = "block";
-            hobbySearchContainer.style.display = "block";
-        } else {
-            hobbyDisplay.style.display = "block";
-            hobbyEdit.style.display = "none";
-            hobbySearchContainer.style.display = "none";
-        }
-
-        // แสดงปุ่ม Save เมื่ออยู่ในโหมดแก้ไข
-        const saveButton = document.querySelector('.save-button');
-        let isEditMode = (skillsEdit.style.display === "block") || (hobbyEdit.style.display === "block");
-        saveButton.style.display = isEditMode ? "inline-block" : "none";
-
-        // เปิดหรือปิดการแก้ไขรูปโปรไฟล์ตามโหมด Edit
-        const profilePic = document.getElementById('profile_picture');
-        if (isEditMode) {
-            profilePic.style.cursor = "pointer";
-            profilePic.addEventListener("click", profilePicClickHandler);
-        } else {
-            profilePic.style.cursor = "default";
-            profilePic.removeEventListener("click", profilePicClickHandler);
-        }
-    }
-
-    // ฟังก์ชัน updateSkillsAndHobbies สำหรับอัปเดตข้อมูล skills/hobbies ไปยัง update_profile.php
-    function updateSkillsAndHobbies() {
-        let skillsCheckboxes = document.querySelectorAll('input[name="skills[]"]:checked');
-        let selectedSkills = Array.from(skillsCheckboxes).map(cb => cb.value).join(',');
-        let hobbyCheckboxes = document.querySelectorAll('input[name="hobby[]"]:checked');
-        let selectedHobbies = Array.from(hobbyCheckboxes).map(cb => cb.value).join(',');
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "update_profile.php", true);
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                let skillsTextDisplay = Array.from(skillsCheckboxes)
-                    .map(cb => cb.parentElement.textContent.trim())
-                    .join(', ');
-                document.getElementById('skills_text_display').innerHTML = skillsTextDisplay;
-                let hobbyTextDisplay = Array.from(hobbyCheckboxes)
-                    .map(cb => cb.parentElement.textContent.trim())
-                    .join(', ');
-                document.getElementById('hobby_text_display').innerHTML = hobbyTextDisplay;
-                toggleEdit();
-                // รีเซ็ตตัวแปรไฟล์ใหม่
-                newProfileImageFile = null;
+        });
+        document.addEventListener('click', (event) => {
+            if (!notificationsCard.contains(event.target) && !notificationButton.contains(event.target)) {
+                notificationsCard.style.display = 'none';
             }
-        };
-        xhr.send("skills_text=" + encodeURIComponent(selectedSkills) +
-            "&hobby_text=" + encodeURIComponent(selectedHobbies));
-    }
+        });
 
-    // ฟังก์ชัน saveChanges จะเช็คว่ามีการเลือกไฟล์รูปใหม่หรือไม่
-    function saveChanges() {
-        if (newProfileImageFile) {
+        // Toggle Edit Mode สำหรับ Skills และ Hobby
+        function toggleEdit() {
+            const skillsDisplay = document.getElementById('skills_text_display');
+            const skillsEdit = document.getElementById('skills_checkbox_list');
+            const skillsSearchContainer = document.getElementById('skills_search_container');
+
+            const hobbyDisplay = document.getElementById('hobby_text_display');
+            const hobbyEdit = document.getElementById('hobby_checkbox_list');
+            const hobbySearchContainer = document.getElementById('hobby_search_container');
+
+            // Toggle skills
+            if (skillsDisplay.style.display !== "none") {
+                skillsDisplay.style.display = "none";
+                skillsEdit.style.display = "block";
+                skillsSearchContainer.style.display = "block";
+            } else {
+                skillsDisplay.style.display = "block";
+                skillsEdit.style.display = "none";
+                skillsSearchContainer.style.display = "none";
+            }
+
+            // Toggle hobby
+            if (hobbyDisplay.style.display !== "none") {
+                hobbyDisplay.style.display = "none";
+                hobbyEdit.style.display = "block";
+                hobbySearchContainer.style.display = "block";
+            } else {
+                hobbyDisplay.style.display = "block";
+                hobbyEdit.style.display = "none";
+                hobbySearchContainer.style.display = "none";
+            }
+
+            // แสดงปุ่ม Save เมื่ออยู่ในโหมดแก้ไข
+            const saveButton = document.querySelector('.save-button');
+            let isEditMode = (skillsEdit.style.display === "block") || (hobbyEdit.style.display === "block");
+            saveButton.style.display = isEditMode ? "inline-block" : "none";
+
+            // เปิดหรือปิดการแก้ไขรูปโปรไฟล์ตามโหมด Edit
+            const profilePic = document.getElementById('profile_picture');
+            if (isEditMode) {
+                profilePic.style.cursor = "pointer";
+                profilePic.addEventListener("click", profilePicClickHandler);
+            } else {
+                profilePic.style.cursor = "default";
+                profilePic.removeEventListener("click", profilePicClickHandler);
+            }
+        }
+
+        // ฟังก์ชัน updateSkillsAndHobbies สำหรับอัปเดตข้อมูล skills/hobbies ไปยัง update_profile.php
+        function updateSkillsAndHobbies() {
+            let skillsCheckboxes = document.querySelectorAll('input[name="skills[]"]:checked');
+            let selectedSkills = Array.from(skillsCheckboxes).map(cb => cb.value).join(',');
+            let hobbyCheckboxes = document.querySelectorAll('input[name="hobby[]"]:checked');
+            let selectedHobbies = Array.from(hobbyCheckboxes).map(cb => cb.value).join(',');
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "update_profile.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    let skillsTextDisplay = Array.from(skillsCheckboxes)
+                        .map(cb => cb.parentElement.textContent.trim())
+                        .join(', ');
+                    document.getElementById('skills_text_display').innerHTML = skillsTextDisplay;
+                    let hobbyTextDisplay = Array.from(hobbyCheckboxes)
+                        .map(cb => cb.parentElement.textContent.trim())
+                        .join(', ');
+                    document.getElementById('hobby_text_display').innerHTML = hobbyTextDisplay;
+                    toggleEdit();
+                    // รีเซ็ตตัวแปรไฟล์ใหม่
+                    newProfileImageFile = null;
+                }
+            };
+            xhr.send("skills_text=" + encodeURIComponent(selectedSkills) +
+                "&hobby_text=" + encodeURIComponent(selectedHobbies));
+        }
+
+        // ฟังก์ชัน saveChanges จะเช็คว่ามีการเลือกไฟล์รูปใหม่หรือไม่
+        function saveChanges() {
+            let skillsCheckboxes = document.querySelectorAll('input[name="skills[]"]:checked');
+            let selectedSkills = Array.from(skillsCheckboxes).map(cb => cb.value);
+
+            let hobbyCheckboxes = document.querySelectorAll('input[name="hobby[]"]:checked');
+            let selectedHobbies = Array.from(hobbyCheckboxes).map(cb => cb.value);
+
             let formData = new FormData();
-            formData.append('profile_image', newProfileImageFile);
+            formData.append('selectedSkills', selectedSkills.join(','));
+            formData.append('selectedHobbies', selectedHobbies.join(','));
+
             fetch('stuf.php', {
                     method: 'POST',
                     body: formData
                 })
-                .then(res => res.text())
+                .then(response => response.json())
                 .then(data => {
-                    console.log("Response from stuf.php:", data); // ตรวจสอบ response ที่ได้
-                    if (data.trim() === 'success') {
-                        updateSkillsAndHobbies();
+                    if (data.success) {
+                        // รีเฟรชหน้าเมื่อข้อมูลอัปเดตสำเร็จ
+                        window.location.reload();
                     } else {
-                        alert("อัปโหลดรูปโปรไฟล์ไม่สำเร็จ: " + data);
+                        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
                     }
                 })
                 .catch(err => {
-                    alert("เกิดข้อผิดพลาดในการอัปโหลดรูปโปรไฟล์");
                     console.error(err);
+                    alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
                 });
-        } else {
-            updateSkillsAndHobbies();
         }
-    }
 
-    // Event listener สำหรับค้นหาใน Skills (Real-time + Reordering)
-    document.getElementById('skills_search').addEventListener('keyup', function() {
-        var filter = this.value.toLowerCase().trim();
-        // ดึงกลุ่มทั้งหมดใน skills_checkbox_list เป็น array
-        var groups = Array.from(document.querySelectorAll('#skills_checkbox_list .group-checkbox'));
 
-        // ถ้าไม่มีการพิมพ์ข้อความ ให้แสดงกลุ่มทั้งหมดตามลำดับเดิม
-        if (filter === "") {
+        // Event listener สำหรับค้นหาใน Skills (Real-time + Reordering)
+        document.getElementById('skills_search').addEventListener('keyup', function() {
+            var filter = this.value.toLowerCase().trim();
+            // ดึงกลุ่มทั้งหมดใน skills_checkbox_list เป็น array
+            var groups = Array.from(document.querySelectorAll('#skills_checkbox_list .group-checkbox'));
+
+            // ถ้าไม่มีการพิมพ์ข้อความ ให้แสดงกลุ่มทั้งหมดตามลำดับเดิม
+            if (filter === "") {
+                groups.forEach(function(group) {
+                    group.style.display = "";
+                });
+                return;
+            }
+
+            // สำหรับแต่ละกลุ่ม ให้ตรวจสอบว่าหมวดหมู่หลัก (category) มีคำค้นหาหรือไม่
             groups.forEach(function(group) {
-                group.style.display = "";
+                var mainLabel = group.querySelector("label").innerText.toLowerCase();
+                if (mainLabel.indexOf(filter) > -1) {
+                    group.style.display = "";
+                    var subContainer = group.querySelector('.subskills');
+                    if (subContainer) {
+                        subContainer.querySelectorAll('label').forEach(function(label) {
+                            label.style.display = "";
+                        });
+                    }
+                } else {
+                    var subContainer = group.querySelector('.subskills');
+                    var labels = Array.from(subContainer.querySelectorAll('label'));
+                    var anyMatch = false;
+                    labels.forEach(function(label) {
+                        if (label.textContent.toLowerCase().indexOf(filter) > -1) {
+                            label.style.display = "";
+                            anyMatch = true;
+                        } else {
+                            label.style.display = "none";
+                        }
+                    });
+                    group.style.display = anyMatch ? "" : "none";
+                }
             });
-            return;
-        }
 
-        // สำหรับแต่ละกลุ่ม ให้ตรวจสอบว่าหมวดหมู่หลัก (category) มีคำค้นหาหรือไม่
-        groups.forEach(function(group) {
-            var mainLabel = group.querySelector("label").innerText.toLowerCase();
-            if (mainLabel.indexOf(filter) > -1) {
-                group.style.display = "";
-                var subContainer = group.querySelector('.subskills');
-                if (subContainer) {
-                    subContainer.querySelectorAll('label').forEach(function(label) {
-                        label.style.display = "";
+            // Reorder groups: ให้กลุ่มที่มี category header ตรงกับ filter (lower index) ขึ้นมาก่อน
+            groups.sort(function(a, b) {
+                var aMain = a.querySelector("label").innerText.toLowerCase();
+                var bMain = b.querySelector("label").innerText.toLowerCase();
+                var posA = aMain.indexOf(filter);
+                var posB = bMain.indexOf(filter);
+                if (posA === -1) posA = Infinity;
+                if (posB === -1) posB = Infinity;
+                return posA - posB;
+            });
+            var container = document.getElementById('skills_checkbox_list');
+            groups.forEach(function(group) {
+                container.appendChild(group);
+            });
+        });
+
+        document.getElementById('hobby_search').addEventListener('keyup', function() {
+            var filter = this.value.toLowerCase().trim();
+            var groups = Array.from(document.querySelectorAll('#hobby_checkbox_list .group-checkbox'));
+            if (filter === "") {
+                groups.forEach(function(group) {
+                    group.style.display = "";
+                });
+                return;
+            }
+            groups.forEach(function(group) {
+                var mainLabel = group.querySelector("label").innerText.toLowerCase();
+                if (mainLabel.indexOf(filter) > -1) {
+                    group.style.display = "";
+                    var subContainer = group.querySelector('.subhobbies');
+                    if (subContainer) {
+                        subContainer.querySelectorAll('label').forEach(function(label) {
+                            label.style.display = "";
+                        });
+                    }
+                } else {
+                    var subContainer = group.querySelector('.subhobbies');
+                    var labels = Array.from(subContainer.querySelectorAll('label'));
+                    var anyMatch = false;
+                    labels.forEach(function(label) {
+                        if (label.textContent.toLowerCase().indexOf(filter) > -1) {
+                            label.style.display = "";
+                            anyMatch = true;
+                        } else {
+                            label.style.display = "none";
+                        }
+                    });
+                    group.style.display = anyMatch ? "" : "none";
+                }
+            });
+            groups.sort(function(a, b) {
+                var aMain = a.querySelector("label").innerText.toLowerCase();
+                var bMain = b.querySelector("label").innerText.toLowerCase();
+                var posA = aMain.indexOf(filter);
+                var posB = bMain.indexOf(filter);
+                if (posA === -1) posA = Infinity;
+                if (posB === -1) posB = Infinity;
+                return posA - posB;
+            });
+            var container = document.getElementById('hobby_checkbox_list');
+            groups.forEach(function(group) {
+                container.appendChild(group);
+            });
+        });
+
+        // Toggle display ของ subskills เมื่อคลิก main skill
+        document.querySelectorAll('.main-skill').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const skillId = this.getAttribute('data-skill-id');
+                const subskillsContainer = document.getElementById('subskills-' + skillId);
+                if (this.checked) {
+                    subskillsContainer.style.display = 'block';
+                } else {
+                    subskillsContainer.style.display = 'none';
+                    subskillsContainer.querySelectorAll('input[type="checkbox"]').forEach(function(subCheckbox) {
+                        subCheckbox.checked = false;
                     });
                 }
-            } else {
-                var subContainer = group.querySelector('.subskills');
-                var labels = Array.from(subContainer.querySelectorAll('label'));
-                var anyMatch = false;
-                labels.forEach(function(label) {
-                    if (label.textContent.toLowerCase().indexOf(filter) > -1) {
-                        label.style.display = "";
-                        anyMatch = true;
-                    } else {
-                        label.style.display = "none";
-                    }
-                });
-                group.style.display = anyMatch ? "" : "none";
-            }
-        });
-
-        // Reorder groups: ให้กลุ่มที่มี category header ตรงกับ filter (lower index) ขึ้นมาก่อน
-        groups.sort(function(a, b) {
-            var aMain = a.querySelector("label").innerText.toLowerCase();
-            var bMain = b.querySelector("label").innerText.toLowerCase();
-            var posA = aMain.indexOf(filter);
-            var posB = bMain.indexOf(filter);
-            if (posA === -1) posA = Infinity;
-            if (posB === -1) posB = Infinity;
-            return posA - posB;
-        });
-        var container = document.getElementById('skills_checkbox_list');
-        groups.forEach(function(group) {
-            container.appendChild(group);
-        });
-    });
-
-    document.getElementById('hobby_search').addEventListener('keyup', function() {
-        var filter = this.value.toLowerCase().trim();
-        var groups = Array.from(document.querySelectorAll('#hobby_checkbox_list .group-checkbox'));
-        if (filter === "") {
-            groups.forEach(function(group) {
-                group.style.display = "";
             });
-            return;
-        }
-        groups.forEach(function(group) {
-            var mainLabel = group.querySelector("label").innerText.toLowerCase();
-            if (mainLabel.indexOf(filter) > -1) {
-                group.style.display = "";
-                var subContainer = group.querySelector('.subhobbies');
-                if (subContainer) {
-                    subContainer.querySelectorAll('label').forEach(function(label) {
-                        label.style.display = "";
+        });
+
+        // Toggle display ของ subhobbies เมื่อคลิก main hobby
+        document.querySelectorAll('.main-hobby').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                const hobbyId = this.getAttribute('data-hobby-id');
+                const subhobbiesContainer = document.getElementById('subhobbies-' + hobbyId);
+                if (this.checked) {
+                    subhobbiesContainer.style.display = 'block';
+                } else {
+                    subhobbiesContainer.style.display = 'none';
+                    subhobbiesContainer.querySelectorAll('input[type="checkbox"]').forEach(function(subCheckbox) {
+                        subCheckbox.checked = false;
                     });
                 }
-            } else {
-                var subContainer = group.querySelector('.subhobbies');
-                var labels = Array.from(subContainer.querySelectorAll('label'));
-                var anyMatch = false;
-                labels.forEach(function(label) {
-                    if (label.textContent.toLowerCase().indexOf(filter) > -1) {
-                        label.style.display = "";
-                        anyMatch = true;
-                    } else {
-                        label.style.display = "none";
-                    }
-                });
-                group.style.display = anyMatch ? "" : "none";
-            }
+            });
         });
-        groups.sort(function(a, b) {
-            var aMain = a.querySelector("label").innerText.toLowerCase();
-            var bMain = b.querySelector("label").innerText.toLowerCase();
-            var posA = aMain.indexOf(filter);
-            var posB = bMain.indexOf(filter);
-            if (posA === -1) posA = Infinity;
-            if (posB === -1) posB = Infinity;
-            return posA - posB;
-        });
-        var container = document.getElementById('hobby_checkbox_list');
-        groups.forEach(function(group) {
-            container.appendChild(group);
-        });
-    });
+    </script>
+    <script>
+        // ตัวแปรเก็บไฟล์รูปโปรไฟล์ใหม่ (ถ้ามี)
+        let newProfileImageFile = null;
 
-    // Toggle display ของ subskills เมื่อคลิก main skill
-    document.querySelectorAll('.main-skill').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            const skillId = this.getAttribute('data-skill-id');
-            const subskillsContainer = document.getElementById('subskills-' + skillId);
-            if (this.checked) {
-                subskillsContainer.style.display = 'block';
-            } else {
-                subskillsContainer.style.display = 'none';
-                subskillsContainer.querySelectorAll('input[type="checkbox"]').forEach(function(subCheckbox) {
-                    subCheckbox.checked = false;
-                });
-            }
+        document.getElementById('profile_image_input').addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+            newProfileImageFile = file;
+            // แสดงตัวอย่างรูปโปรไฟล์ที่เลือก
+            const img = document.getElementById('profile_picture');
+            img.src = URL.createObjectURL(file);
         });
-    });
 
-    // Toggle display ของ subhobbies เมื่อคลิก main hobby
-    document.querySelectorAll('.main-hobby').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            const hobbyId = this.getAttribute('data-hobby-id');
-            const subhobbiesContainer = document.getElementById('subhobbies-' + hobbyId);
-            if (this.checked) {
-                subhobbiesContainer.style.display = 'block';
-            } else {
-                subhobbiesContainer.style.display = 'none';
-                subhobbiesContainer.querySelectorAll('input[type="checkbox"]').forEach(function(subCheckbox) {
-                    subCheckbox.checked = false;
-                });
-            }
-        });
-    });
-</script>
-<script>
-    // ตัวแปรเก็บไฟล์รูปโปรไฟล์ใหม่ (ถ้ามี)
-    let newProfileImageFile = null;
-
-    document.getElementById('profile_image_input').addEventListener('change', function() {
-        const file = this.files[0];
-        if (!file) return;
-        newProfileImageFile = file;
-        // แสดงตัวอย่างรูปโปรไฟล์ที่เลือก
-        const img = document.getElementById('profile_picture');
-        img.src = URL.createObjectURL(file);
-    });
-
-    function profilePicClickHandler() {
-        document.getElementById('profile_image_input').click();
-    }
-</script>
+        function profilePicClickHandler() {
+            document.getElementById('profile_image_input').click();
+        }
+    </script>
 </body>
+
 </html>
 <?php $conn->close(); ?>
