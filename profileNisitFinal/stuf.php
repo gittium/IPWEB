@@ -6,60 +6,85 @@ $user_id = $_SESSION['user_id'] ?? null;
 // รวมไฟล์คำนวณรีวิว
 include 'calculate_review.php';
 
+// ตรวจสอบการเชื่อมต่อฐานข้อมูล
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
 // ถ้าเป็น POST (อัปโหลดรูปโปรไฟล์ หรือ อัปเดตข้อมูลอื่นๆ)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // หากมีการส่งไฟล์รูปโปรไฟล์ (Profile Image Upload)
+    $isProfileUpdated = false;
+    $isSkillsUpdated = false;
+    $isHobbiesUpdated = false;
+
+    // ตรวจสอบว่ามีการอัปโหลดรูปภาพโปรไฟล์ใหม่หรือไม่
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = 'profile/'; // โฟลเดอร์เป้าหมาย
+        // อัปโหลดโปรไฟล์ใหม่
+        $uploadDir = 'profile/';
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true); // สร้างโฟลเดอร์หากไม่มี
+            mkdir($uploadDir, 0777, true);
         }
         $fileTmpPath = $_FILES['profile_image']['tmp_name'];
         $fileName = basename($_FILES['profile_image']['name']);
         $fileNameNew = uniqid('profile_', true) . "_" . $fileName;
         $fileDest = $uploadDir . $fileNameNew;
-        
-        // ถ้าย้ายไฟล์สำเร็จ
+
         if (move_uploaded_file($fileTmpPath, $fileDest)) {
+            // อัปเดตข้อมูลรูปโปรไฟล์ในฐานข้อมูล
             $sqlUpdateProfile = "UPDATE student SET profile = ? WHERE student_id = ?";
             $stmtProfile = $conn->prepare($sqlUpdateProfile);
             $stmtProfile->bind_param("ss", $fileDest, $user_id);
-            echo ($stmtProfile->execute()) ? "success" : "db_error";
+            if ($stmtProfile->execute()) {
+                $isProfileUpdated = true;
+            } else {
+                echo json_encode(["success" => false, "message" => "Database error: " . $stmtProfile->error]);
+                $stmtProfile->close();
+                exit();
+            }
             $stmtProfile->close();
         } else {
-            echo "upload_failed";
+            echo json_encode(["success" => false, "message" => "Upload failed."]);
+            exit();
         }
-        // ปิดการเชื่อมต่อฐานข้อมูลหลังจากอัปโหลดเสร็จ
-        $conn->close();
-        exit();
     }
 
-    // ส่วนอัปเดตข้อมูล skills และ hobbies
+    // ตรวจสอบและอัปเดตข้อมูล skills และ hobbies
     $selectedSkills = isset($_POST['selectedSkills']) ? explode(',', $_POST['selectedSkills']) : [];
     $selectedHobbies = isset($_POST['selectedHobbies']) ? explode(',', $_POST['selectedHobbies']) : [];
 
-    // อัปเดตข้อมูล skills และ hobbies
-    $success = updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbies);
+    if (!empty($selectedSkills) || !empty($selectedHobbies)) {
+        // อัปเดต skills และ hobbies
+        $success = updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbies);
+        if ($success) {
+            $isSkillsUpdated = true;
+            $isHobbiesUpdated = true;
+        }
+    }
 
-    // ส่งผลลัพธ์กลับไปยัง JavaScript
-    echo json_encode(["success" => $success]);
+    // อัปเดตข้อมูลทุกส่วนได้สำเร็จ
+    if ($isProfileUpdated || $isSkillsUpdated || $isHobbiesUpdated) {
+        echo json_encode(["success" => true]);
+    } else {
+        echo json_encode(["success" => false, "message" => "No data to update"]);
+    }
+
+    $conn->close();
     exit();
 }
 
 // ฟังก์ชันอัปเดต skills และ hobbies
 function updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbies)
 {
-    // เริ่มต้นการทำงานกับฐานข้อมูล
     $conn->begin_transaction();
 
     try {
-        // 1. ลบข้อมูล skills เดิมที่เกี่ยวข้องกับนิสิต
+        // ลบข้อมูล skills เดิมที่เกี่ยวข้องกับนิสิต
         $delete_skills_sql = "DELETE FROM student_skill WHERE student_id = ?";
         $stmt = $conn->prepare($delete_skills_sql);
         $stmt->bind_param("s", $user_id);
         $stmt->execute();
 
-        // 2. อัปเดต skills ที่เลือกใหม่
+        // อัปเดต skills ใหม่
         foreach ($selectedSkills as $skillData) {
             list($skill_id, $subskill_id) = explode("-", $skillData);
             $insert_skill_sql = "INSERT INTO student_skill (student_id, skill_id, subskill_id) VALUES (?, ?, ?)";
@@ -68,13 +93,13 @@ function updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbi
             $stmt->execute();
         }
 
-        // 3. ลบข้อมูล hobbies เดิมที่เกี่ยวข้องกับนิสิต
+        // ลบข้อมูล hobbies เดิมที่เกี่ยวข้องกับนิสิต
         $delete_hobbies_sql = "DELETE FROM student_hobby WHERE student_id = ?";
         $stmt = $conn->prepare($delete_hobbies_sql);
         $stmt->bind_param("s", $user_id);
         $stmt->execute();
 
-        // 4. อัปเดต hobbies ที่เลือกใหม่
+        // อัปเดต hobbies ใหม่
         foreach ($selectedHobbies as $hobbyData) {
             list($hobby_id, $subhobby_id) = explode("-", $hobbyData);
             $insert_hobby_sql = "INSERT INTO student_hobby (student_id, hobby_id, subhobby_id) VALUES (?, ?, ?)";
@@ -83,16 +108,15 @@ function updateSkillsAndHobbies($conn, $user_id, $selectedSkills, $selectedHobbi
             $stmt->execute();
         }
 
-        // หากไม่มีข้อผิดพลาด ให้ทำการ commit ข้อมูล
+        // commit ข้อมูล
         $conn->commit();
         return true;
     } catch (Exception $e) {
-        // หากเกิดข้อผิดพลาดใด ๆ ให้ทำการ rollback ข้อมูล
+        // หากเกิดข้อผิดพลาดให้ rollback ข้อมูล
         $conn->rollback();
         return false;
     }
 }
-
 
 // ถ้ามีการส่งค่าผ่าน URL (GET) สำหรับอัปเดตสถานะแจ้งเตือน
 if (isset($_GET['id'])) {
@@ -686,6 +710,13 @@ $hobby_list_display = implode("<br>", $hobby_display);
             formData.append('selectedSkills', selectedSkills.join(','));
             formData.append('selectedHobbies', selectedHobbies.join(','));
 
+            // ตรวจสอบว่าได้เลือกไฟล์รูปภาพใหม่หรือไม่
+            let profileImageInput = document.getElementById('profile_image_input');
+            if (profileImageInput.files.length > 0) {
+                let profileImageFile = profileImageInput.files[0];
+                formData.append('profile_image', profileImageFile);
+            }
+
             fetch('stuf.php', {
                     method: 'POST',
                     body: formData
@@ -696,7 +727,7 @@ $hobby_list_display = implode("<br>", $hobby_display);
                         // รีเฟรชหน้าเมื่อข้อมูลอัปเดตสำเร็จ
                         window.location.reload();
                     } else {
-                        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+                        alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล: ' + (data.message || 'ไม่ทราบเหตุผล'));
                     }
                 })
                 .catch(err => {
@@ -704,6 +735,8 @@ $hobby_list_display = implode("<br>", $hobby_display);
                     alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
                 });
         }
+
+
 
 
         // Event listener สำหรับค้นหาใน Skills (Real-time + Reordering)
