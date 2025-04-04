@@ -74,21 +74,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['notification_id'])) {
 
 // ดึงข้อมูลแจ้งเตือน
 // ดึงข้อมูลแจ้งเตือน
-$sql = "SELECT notification.notification_id AS notifications_id, 
-               notification.message, 
-               notification.created_at, 
-               notification.status, 
-               post_job.title AS job_title,
-               job_application.job_application_id, 
-               report.report_id, 
-               notification.reference_id,  
-               notification.reference_table  
+$sql = "SELECT 
+            notification.notification_id AS notifications_id, 
+            notification.message, 
+            notification.created_at, 
+            notification.status, 
+            CASE 
+                WHEN notification.reference_table = 'job_application' THEN job_post.title
+                WHEN notification.reference_table = 'report' THEN report_post.title
+                ELSE ''
+            END AS title,
+            job_application.job_application_id, 
+            report.report_id, 
+            notification.reference_id,  
+            notification.reference_table  
         FROM notification
-        LEFT JOIN job_application ON notification.reference_id = job_application.job_application_id
-        LEFT JOIN post_job ON job_application.post_job_id = post_job.post_job_id
-        LEFT JOIN report ON notification.reference_id = report.report_id
+        LEFT JOIN job_application 
+            ON notification.reference_id = job_application.job_application_id
+        LEFT JOIN post_job AS job_post 
+            ON job_application.post_job_id = job_post.post_job_id
+        LEFT JOIN report 
+            ON notification.reference_id = report.report_id
+        LEFT JOIN post_job AS report_post 
+            ON report.post_job_id = report_post.post_job_id
         WHERE notification.user_id = ?
         ORDER BY notification.created_at DESC";
+
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $user_id);
 $stmt->execute();
@@ -97,7 +108,7 @@ $notifications = [];
 while ($row = $result->fetch_assoc()) {
     $notifications[] = [
         'id' => $row['notifications_id'],
-        'title' => $row['job_title'],
+        'title' => $row['title'], // แก้จาก $row['job_title'] เป็น $row['title']
         'message' => $row['message'],
         'time' => $row['created_at'],
         'job_app_id' => $row['job_application_id'],
@@ -108,6 +119,7 @@ while ($row = $result->fetch_assoc()) {
     ];
 }
 $stmt->close();
+
 
 // ดึงจำนวนแจ้งเตือนที่ยังไม่ได้อ่าน
 $sql = "SELECT COUNT(*) AS unread_count FROM notification WHERE status = 'unread' AND user_id = ?";
@@ -242,6 +254,7 @@ $stmtJ->close();
             background-color: #FF7C00;
             color: #fff;
         }
+
         /* จุดแดงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงง */
         .unread-dot {
             display: inline-block;
@@ -283,7 +296,8 @@ $stmtJ->close();
                     src="<?php echo htmlspecialchars($teacher['profile']); ?>"
                     alt="Profile Picture"
                     style="cursor: pointer;"
-                    onclick="document.getElementById('profile_image_input').click();">
+                    onclick="handleProfileClick();">
+
                 <!-- input file แบบซ่อน -->
                 <input type="file" id="profile_image_input" style="display:none;" accept="image/*">
                 <div class="detail-name">
@@ -333,7 +347,7 @@ $stmtJ->close();
                                 $link = "#";
                                 if ($notification['reference_table'] == 'job_application') {
                                     $link = "viewapply2.php?job_app_id=" . $notification['job_app_id'];
-                                } elseif ($notification['reference_table'] == 'reports') {
+                                } else {
                                     $link = "viewnoti_reports.php?reports_id=" . $notification['reports_id'] . "&notifications_id=" . $notification['id'];
                                 }
                             ?>
@@ -539,30 +553,31 @@ $stmtJ->close();
             }
 
             function markAsRead(notificationId, notificationItem) {
-                console.log("Marking as read:", notificationId);
-                // ลบจุด indicator (unread dot) ถ้ามีอยู่
-                // จุดแดงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงงง 
+                // ตรวจสอบว่าการแจ้งเตือนนี้ยังเป็น unread อยู่หรือไม่
+                const wasUnread = notificationItem.getAttribute("data-status") === "unread";
+
+                // ลบ indicator จุดแดง (unread dot) ถ้ามีอยู่
                 const redDot = notificationItem.querySelector('.unread-dot');
                 if (redDot) {
                     redDot.remove();
                 }
+
+                // เปลี่ยนสถานะของ notification เป็น read
                 notificationItem.dataset.status = "read";
                 notificationItem.classList.remove("unread");
                 notificationItem.classList.add("read");
 
-                // หากอยู่ในแท็บ unread ให้ลบ element ออกจาก DOM
-                let activeTab = document.querySelector(".tab.active").getAttribute("data-filter");
-                if (activeTab === "unread") {
-                    notificationItem.remove();
+                // หากเป็น notification ที่ยังไม่อ่าน ให้ลดตัวเลขแจ้งเตือน
+                if (wasUnread) {
+                    let unreadBadge = document.querySelector(".notification-badge");
+                    let unreadCount = parseInt(unreadBadge.innerText) || 0;
+                    if (unreadCount > 0) {
+                        unreadCount--;
+                        updateUnreadCount(unreadCount);
+                    }
                 }
-                // ปรับจำนวนแจ้งเตือนที่ยังไม่ได้อ่าน
-                let unreadBadge = document.querySelector(".notification-badge");
-                let unreadCount = parseInt(unreadBadge.innerText) || 0;
-                if (unreadCount > 0) {
-                    unreadCount--;
-                    updateUnreadCount(unreadCount);
-                }
-                // เรียก API อัปเดตสถานะในฐานข้อมูล
+
+                // เรียก API เพื่ออัปเดตสถานะในฐานข้อมูล
                 fetch(`teacher_profile.php?notification_id=${notificationId}`, {
                         method: 'GET'
                     })
@@ -574,6 +589,7 @@ $stmtJ->close();
                     })
                     .catch(error => console.error("Error updating notification:", error));
             }
+
 
             function updateUnreadCount(count) {
                 let notificationBadge = document.querySelector(".notification-badge");
@@ -612,38 +628,31 @@ $stmtJ->close();
     </script>
     <!-- JavaScript สำหรับ Edit Mode (Contact) -->
     <script>
+        let isEditMode = false; // ใช้เช็คสถานะ edit
+
         function toggleEdit() {
             const cDisplay = document.getElementById('contact_display');
             const cEdit = document.getElementById('contact_edit');
-            const jobCards = document.querySelectorAll('.card[data-job-id]');
             const saveBtn = document.querySelector('.save-button');
 
-            if (cDisplay.style.display !== 'none') {
+            isEditMode = !isEditMode; // toggle โหมด edit
+
+            if (isEditMode) {
                 cDisplay.style.display = 'none';
                 cEdit.style.display = 'block';
-                jobCards.forEach(card => {
-                    const jobId = card.getAttribute('data-job-id');
-                    const dispEl = document.getElementById('job_display_' + jobId);
-                    const editEl = document.getElementById('job_edit_' + jobId);
-                    if (dispEl && editEl) {
-                        dispEl.style.display = 'none';
-                        editEl.style.display = 'block';
-                    }
-                });
                 saveBtn.style.display = 'inline-block';
             } else {
                 cDisplay.style.display = 'block';
                 cEdit.style.display = 'none';
-                jobCards.forEach(card => {
-                    const jobId = card.getAttribute('data-job-id');
-                    const dispEl = document.getElementById('job_display_' + jobId);
-                    const editEl = document.getElementById('job_edit_' + jobId);
-                    if (dispEl && editEl) {
-                        dispEl.style.display = 'block';
-                        editEl.style.display = 'none';
-                    }
-                });
                 saveBtn.style.display = 'none';
+            }
+        }
+
+        function handleProfileClick() {
+            if (isEditMode) {
+                document.getElementById('profile_image_input').click();
+            } else {
+                alert("หากต้องการเปลี่ยนรูปโปรไฟล์ กรุณากดปุ่ม Edit ก่อน");
             }
         }
 
