@@ -1,27 +1,41 @@
 <?php
 session_start();
 include 'database.php';
-
+$user_id = $_SESSION['user_id'] ?? null;
+$name = $_SESSION['name'] ?? null;
 // รับค่า id จาก URL
 $job_id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
 if ($job_id) {
     // ดึงข้อมูลรายละเอียดของงานตาม ID
-    $sql = "SELECT post_jobs.title,post_jobs.skills,post_jobs.job_start,post_jobs.job_end,post_jobs.number_student,
-            post_jobs.image , post_jobs.description, post_jobs.timeandwage,  post_jobs.reward_type_id,
-            reward_type.reward_name, job_categories.categories_name AS category, teachers.name AS teacher
-            FROM post_jobs 
-            JOIN teachers ON post_jobs.teachers_id = teachers.teachers_id
-            JOIN job_categories ON post_jobs.job_categories_id = job_categories.job_categories_id
-            JOIN job_subcategories ON post_jobs.job_sub_id = job_subcategories.job_sub_id
-            JOIN reward_type ON post_jobs.reward_type_id = reward_type.reward_type_id
-            WHERE post_jobs.post_jobs_id = ?";
+    $sql = "SELECT post_job.title,post_job.job_start,post_job.job_end,post_job.number_student,
+            post_job.image , post_job.description, post_job.time_and_wage,teacher.profile,  post_job.reward_type_id,
+            reward_type.reward_type_name AS reward_name, job_category.job_category_name AS category, teacher.teach_name AS teacher
+            FROM post_job
+            JOIN teacher ON post_job.teacher_id = teacher.teacher_id
+            JOIN job_category ON post_job.job_category_id = job_category.job_category_id
+            JOIN job_subcategory ON post_job.job_subcategory_id = job_subcategory.job_subcategory_id
+            JOIN reward_type ON post_job.reward_type_id = reward_type.reward_type_id
+            WHERE post_job.post_job_id = ?";
 
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $job_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $job = $result->fetch_assoc();
+    $stmt->close();
+
+    $sql = "SELECT post_job_id,
+               GROUP_CONCAT(subskill.subskill_name ORDER BY subskill.subskill_name SEPARATOR ', ') AS skills
+        FROM post_job_skill
+        JOIN subskill ON post_job_skill.subskill_id= subskill.subskill_id
+        WHERE post_job_id = ?
+        GROUP BY post_job_id";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $job_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $skill = $result->fetch_assoc();
     $stmt->close();
 }
 
@@ -42,7 +56,7 @@ if (isset($_SESSION['user_id'])) {
 
 // ดึงกฎการรายงานจากฐานข้อมูล
 $report_reasons = [];
-$sql = "SELECT report_categories_id as id, report_categories_name FROM report_categories";
+$sql = "SELECT report_category_id as id, report_category_name FROM report_category";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -51,29 +65,12 @@ if ($result->num_rows > 0) {
     }
 }
 
-$sql = "SELECT pj.post_jobs_id, pj.title, 
-               CONCAT('สกิลที่ต้องการ : ', GROUP_CONCAT(s.skills_name ORDER BY s.skills_id SEPARATOR ', ')) AS skill_list
-        FROM post_jobs pj
-        JOIN skills s ON FIND_IN_SET(s.skills_id, pj.skills) > 0
-        WHERE pj.post_jobs_id = ?
-        GROUP BY pj.post_jobs_id, pj.title";
+$sql = "SELECT * FROM reward_type WHERE reward_type_id = " . $job['reward_type_id'];
+$reward = $conn->query($sql);
 
-// เตรียมคำสั่ง SQL
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $job_id); // ผูกค่าพารามิเตอร์
-$stmt->execute();
-$result = $stmt->get_result();
 
-// ดึงข้อมูล
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $skill_list = $row['skill_list']; // ดึงค่าลงตัวแปร
-} else {
-    $skill_list = "ไม่มีข้อมูล"; // กรณีไม่มีข้อมูล
-}
 
 // ปิดการเชื่อมต่อ
-$stmt->close();
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -106,9 +103,9 @@ $conn->close();
             <?php
             if (isset($_SESSION['user_id'])) {
                 if ($_SESSION['user_role'] == 3) {
-                    echo '<a href="teacher_profile.php">Profile</a>';
+                    echo '<a href="teacher_profile.php">Profile\'s ' . htmlspecialchars($name) . '</a>';
                 } elseif ($_SESSION['user_role'] == 4) {
-                    echo '<a href="stuf.php">Profile</a>';
+                    echo '<a href="stuf.php">Profile\'s ' . htmlspecialchars($name) . '</a>';
                 }
             } else {
                 echo '<a href="login.php">Login</a>';
@@ -118,20 +115,20 @@ $conn->close();
     </header>
 
     <!-- Main Content -->
-    <!--<a href="hometest.php" class="back-arrow"></a> -->
     <a href="#" onclick="goBackOrHome()" class="back-arrow"></a>
 
     <script>
         function goBackOrHome() {
-            if (document.referrer.includes("viewnoti.php") && window.history.length > 1) {
-                window.history.back(); // ถ้ามาจาก `stuf.php` และมีประวัติหน้า → ย้อนกลับ
+            // ตรวจสอบว่าหน้าก่อนหน้านี้คือ stuf.php หรือไม่
+            if (document.referrer.includes("viewnoti.php")) {
+                window.history.back(); // ถ้ามาจากviewnoti.php → ใช้ window.history.back()
+            } else if (document.referrer.includes("viewnoti_reports.php")) {
+                window.location.href = "teacher_profile.php"; // ถ้าไม่ → ไปที่ hometest.php
             } else {
                 window.location.href = "hometest.php"; // ถ้าไม่ → ไปที่ hometest.php
             }
         }
     </script>
-
-
     <div class="container">
         <div class="applicant-card">
             <div class="applicant-photo-joinus">
@@ -153,22 +150,27 @@ $conn->close();
                 <br>
                 <span>จำนวนนิสิตที่รับ : <?php echo nl2br(htmlspecialchars($job['number_student']) . " คน"); ?></span>
                 <br>
-                <span><?php echo nl2br(htmlspecialchars($skill_list)); ?></span>
+                <span>สกิลที่ต้องการ : <?php echo nl2br(htmlspecialchars($skill['skills'])); ?></span>
             </div>
             <div class="applicant-reward">
                 <span>ผลตอบแทน : </span>
-                <span><?php echo " " . nl2br(htmlspecialchars($job['timeandwage']));
-                        if (htmlspecialchars($job['reward_type_id']) == 1) {
+                <span><?php echo "  " . nl2br(htmlspecialchars($job['time_and_wage']));
+                        if (htmlspecialchars($job['reward_type_id']) != 1) {
                             echo " บาท ";
                         } else {
                             echo " ชั่วโมง ";
                         }
+                        $row = $reward->fetch_assoc();
+                        echo '(' . htmlspecialchars($row['reward_type_name']) . ')';
                         ?></span>
 
             </div>
 
             <div class="applicant-details-name">
-                <span class="emoji">👤</span>
+                <img class="profile-pic"
+                    id="profile_picture"
+                    src="<?php echo htmlspecialchars($job['profile']); ?>"
+                    alt="Profile Picture">
                 <?php echo htmlspecialchars($job['teacher']); ?>
             </div>
 
@@ -213,7 +215,7 @@ $conn->close();
                         <?php foreach ($report_reasons as $reason) : ?>
                             <label class="report-label">
                                 <input type="radio" name="report_reason" value="<?php echo $reason['id']; ?>" required>
-                                <?php echo htmlspecialchars($reason['report_categories_name']); ?>
+                                <?php echo htmlspecialchars($reason['report_category_name']); ?>
                             </label>
                         <?php endforeach; ?>
                     </div>
