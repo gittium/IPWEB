@@ -1,0 +1,274 @@
+/****** viewapply2 Styles ******/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* Main Content */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.applicant-card {
+    background-color: #ffff;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* แก้ไขส่วนของ .applicant-photo-name และ .photo-link */
+.applicant-photo-name {
+    width: 30%; /* กำหนดความกว้างเท่าเดิม */
+    height: 300px; /* กำหนดความสูงเท่าเดิม */
+    background-color: transparent; /* ไม่ต้องมีพื้นหลัง */
+    margin: 0px 0; /* ระยะห่างเท่าเดิม */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* ลบ border และ box-shadow */
+}
+
+.photo-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 50%; /* กำหนดความกว้างเท่าเดิม */
+    height: 420px; /* กำหนดความสูงเท่าเดิม */
+    margin: 20px 0; /* ระยะห่างเท่าเดิม */
+    /* ลบ border และ box-shadow */
+    border-radius: 8px; /* ยังคงมุมโค้ง */
+}
+
+.photo-link:hover {
+    text-decoration: none;
+    color: inherit;
+    background-color: #ffff/* เอฟเฟกต์เมื่อ hover */
+}
+
+.applicant-photo-name {
+    width: 100%; /* ให้ applicant-photo-name ใช้พื้นที่ทั้งหมดของ photo-link */
+    height: 100%; /* ให้ applicant-photo-name ใช้พื้นที่ทั้งหมดของ photo-link */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffff; /* กำหนดสีพื้นหลัง */
+}
+
+/* ปรับขนาดรูปให้เท่ากับขนาดกรอบเดิม */
+.applicant-photo {
+    width: 100%; /* ใช้พื้นที่เต็มความกว้าง */
+    height: 100%; /* ใช้พื้นที่เต็มความสูง */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* ซ่อนส่วนเกินของรูปภาพ */
+    border-radius: 8px; /* ทำให้มุมโค้ง */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.applicant-photo-img {
+    width: 100%; /* ปรับขนาดรูปภาพให้เต็มพื้นที่ */
+    height: 100%; /* ปรับขนาดรูปภาพให้เต็มพื้นที่ */
+    object-fit: cover; /* ปรับรูปภาพให้พอดีกับกรอบ */
+    border-radius: 8px; /* ทำให้มุมโค้ง */
+}
+
+.applicant-photo span {
+    font-size: 100px; /* ขนาดตัวอักษรสำหรับกรณีไม่มีรูปภาพ */
+    font-weight: bold;
+    /* color: #333; */
+}
+
+.applicant-photo:hover {
+    transform: scale(1.02); /* ขยายขนาดเล็กน้อย */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+}
+
+.emoji{
+    width: 40px; /* ปรับขนาดตามที่คุณต้องการ */
+    height: 40px; /* ปรับขนาดตามที่คุณต้องการ */
+    background-color: #8f8989; /* สีพื้นหลังของอีโมจิ*/
+    border-radius: 50%; /* ทำให้รูปร่างเป็นวงกลม*/
+    display: flex;
+    justify-content: center;
+    align-items: center; /* จัดวางอีโมจิให้อยู่ตรงกลางของกรอบ*/
+    color: white; /* สีของอีโมจิ*/
+    font-size: 24px; /* ปรับขนาดของอีโมจิตามที่คุณต้องการ*/
+   
+}
+.applicant-name {
+    font-size: 1.2rem;
+    font-weight: normal;
+    margin-bottom: 20px;
+}
+
+.resume {
+    width: 50%; /* ใช้พื้นที่เต็มความกว้างของคอนเทนเนอร์ */
+    max-width: 600px; /* กำหนดความกว้างสูงสุด */
+    min-height: 100px; /* ลดความสูงขั้นต่ำ */
+    background-color: #f0f0f0; /* เปลี่ยนสีพื้นหลังให้อ่อนลง */
+    margin: 20px 0; /* เพิ่มระยะห่างด้านบนและล่าง */
+    display: flex;
+    justify-content: center; /* จัดเนื้อหาให้อยู่ตรงกลางแนวนอน */
+    align-items: center; /* จัดเนื้อหาให้อยู่ตรงกลางแนวตั้ง */
+    border-radius: 5px; /* ทำมุมให้โค้ง */
+    padding: 10px; /* เพิ่ม padding ภายใน */
+    overflow: hidden; /* ซ่อนส่วนเกินของเนื้อหา */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อโฮเวอร์ */
+    /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  เพิ่มเงาให้ดูมีมิติ */
+}
+
+.resume img-fluid {
+    max-width: 60%; /* ปรับขนาดรูปภาพให้พอดีกับกรอบ */
+    max-height: 600px; /* ป้องกันไม่ให้รูปภาพล้นกรอบ */
+    border-radius: 5px; /* ทำมุมของรูปภาพให้โค้ง */
+    object-fit: contain; /* ปรับรูปภาพให้ขนาดพอดีกับกรอบ */
+}
+
+.resume:hover {
+    transform: scale(1.02); /* ขยายขนาดเล็กน้อย */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+}
+
+.details {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px;
+    margin-top: 50px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.details label {
+    font-weight: normal;
+}
+
+.title-container {
+    display: flex;
+    align-items: center; /* จัดแนวให้องค์ประกอบอยู่ตรงกลางแนวตั้ง */
+    border-bottom: 1px solid #333; /* เส้นใต้ยาวเต็มความกว้าง */
+    padding-bottom: 0.1px; /* ระยะห่างระหว่างข้อความและเส้น */
+    margin-bottom: 20px; /* ระยะห่างระหว่างหัวข้อและเนื้อหาด้านล่าง */
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: normal;
+    flex: 1; /* ทำให้ข้อความชิดขวาหากมีองค์ประกอบอื่นเพิ่ม */
+}
+
+
+.back-arrow {
+    display: inline-flex;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px; /* ระยะห่างระหว่างลูกศรและข้อความ */
+    border-left: 2px solid #333; /* สร้างเส้นเฉียง */
+    border-bottom: 2px solid #333;
+    transform: rotate(45deg); /* หมุนเส้นให้เป็นลูกศร */
+    cursor: pointer;   
+    position: absolute; /* ใช้ position เพื่อกำหนดตำแหน่ง */
+    top: 10%; /* ระยะห่างจากขอบด้านบน */
+    left: 20px; /* ระยะห่างจากขอบด้านซ้าย */     
+}
+
+.back-arrow:hover {
+    border-color: #555; /* เปลี่ยนสีเมื่อวางเมาส์ */
+}
+
+/* Approve Button */
+.approve-btn {
+    background-color: #FFA500;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 70px; /* เพิ่มระยะห่างระหว่างปุ่มและด้านบน */
+}
+
+.approve-btn:hover {
+    background-color: #cc8400;
+}
+
+/* Reject Button */
+.reject-btn {
+    background-color: #FF0000; /* สีแดง */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px; /* ระยะห่างระหว่างปุ่ม Reject และ Approve */
+}
+
+.reject-btn:hover {
+    background-color: #cc0000; /* สีแดงเข้มเมื่อ hover */
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    color: #3c763d;
+}
+
+.alert-danger {
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    color: #a94442;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .applicant-photo-name {
+        width: 100%; /* กำหนดให้กรอบกว้างขึ้นสำหรับหน้าจอเล็ก */
+        height: relative; /* ปรับความสูงให้ยืดหยุ่นตามเนื้อหาภายใน */
+    }
+
+    .applicant-photo {
+        width: relative; /* ลดขนาดรูปภาพ */
+        height: relative; /* ลดขนาดรูปภาพ */
+    }
+
+    .applicant-name {
+        font-size: 1rem; /* ลดขนาดตัวอักษรของชื่อ */
+    }
+}

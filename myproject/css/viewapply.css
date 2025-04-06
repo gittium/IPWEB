@@ -1,0 +1,199 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #ffffff;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #4E2A84;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.application-card {
+    display: flex;
+    /* จัดองค์ประกอบภายในการ์ดในแนวนอน */
+    align-items: center;
+    /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    background-color: #f4f4f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    /* เพิ่มระยะห่างระหว่างการ์ดแต่ละอัน */
+    width: 100%;
+    /* ขยายการ์ดให้เต็มความกว้างของ container */
+}
+
+.application-card .number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4E2A84;
+    margin-right: 20px;
+}
+
+.application-card .profile-img {
+    width: 50px;
+    height: 50px;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    font-size: 24px;
+    color: #999;
+}
+
+.application-card .details {
+    flex-grow: 1;
+}
+
+.application-card .details .name {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.application-card .details .department,
+.application-card .details .year {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.application-card .arrow {
+    font-size: 1.5rem;
+    color: #555;
+    margin-left: auto;
+}
+
+.section-title {
+    font-size: 2rem;
+    margin-bottom: 25px;
+    font-family: 'Montserrat', sans-serif;
+    color: #4E2A84;
+}
+
+/* กล่องข้อความที่ซ่อน */
+.message-box {
+    display: none;
+    /* ซ่อนข้อความเริ่มต้น */
+    margin-top: 10px;
+    /* ระยะห่างระหว่างกรอบข้อความกับแถบด้านบน */
+    padding: 15px;
+    /* ระยะห่างภายในกรอบข้อความ */
+    background-color: #f9f9f9;
+    /* สีพื้นหลัง */
+    border-radius: 8px;
+    /* ทำมุมกรอบมน */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    /* เงารอบกรอบ */
+    font-family: Arial, sans-serif;
+    /* ฟอนต์สำหรับข้อความ */
+    width: 100%;
+    /* ขยายกรอบข้อความให้เต็มความกว้าง */
+    box-sizing: border-box;
+    /* รวม padding และ border เข้าไปใน width */
+    transition: border-color 0.3s ease;
+    /* เพิ่มการเปลี่ยนสีของกรอบเมื่อ hover */
+}
+
+.message-box button {
+    padding: 5px 25px;
+    border: 0px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    font-size: 0.95rem;
+}
+
+/* กำหนดกรอบให้กับปุ่มที่เลือก */
+.message-box button.active {
+    border: 3px solid #4E2A84;
+    /* สีกรอบเข้ม */
+    color: #4E2A84;
+    /* เปลี่ยนสีข้อความ */
+    font-weight: bold;
+    /* ทำให้ข้อความหนาขึ้น */
+    transition: all 0.3s ease;
+    /* การเปลี่ยนแปลงที่นุ่มนวล */
+}
+
+
+.message-box button:hover {
+    border-top-left-radius: 10px;
+    /* กำหนดความมนเฉพาะมุมซ้ายบน */
+    border-top-right-radius: 0;
+    /* ยกเลิกความมนของมุมอื่น */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    background-color: white;
+}
+
+.message-box button.selected {
+    border-radius: 0px;
+    /* ทำมุมกรอบมน */
+}
+
+#apply-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+
+/* จัดกลุ่มปุ่มล้างและตกลงให้อยู่ทางขวา */
+#clear-btn {
+    /*display: flex;
+    /*justify-content: flex-start; /* ให้ปุ่มเริ่มจากซ้าย */
+    /*margin-right: 20px; /* ระยะห่างจากปุ่มถัดไป */
+    border: 2px solid #4E2A84;
+    color: #4E2A84;
+    background-color: white;
+}
+
+#apply-btn {
+    /*display: flex;
+    justify-content: flex-end; /* ให้ปุ่มอยู่ทางขวา */
+    /*gap: 5px; */
+    /*margin-left: 50px;*/
+    border: 2px solid #4E2A84;
+    color: white;
+    background-color: #4E2A84
+}
+
+/* Hover สำหรับ "View Applications" */
+.title-container a:first-child {
+    background-color: #d0d0d0;
+    /* เปลี่ยนพื้นหลังเมื่อ hover ที่ "View Applications" */
+}
+
+/* Hover สำหรับ "Manage Job" */
+.title-container a:last-child:hover {
+    background-color: #d0d0d0;
+    /* เปลี่ยนพื้นหลังเมื่อ hover ที่ "Manage Job" */
+}
+
+/* เมื่อคลิกแล้ว (active) จะมีพื้นหลังเหมือนตอน hover และทำให้ค้าง */
+.title-container a:active {
+    background-color: #a0a0a0;
+    /* เปลี่ยนสีพื้นหลังเมื่อคลิก */
+}
+
