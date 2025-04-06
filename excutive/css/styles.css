@@ -1,0 +1,310 @@
+/* styles.css */
+
+/* ==============================
+   Root Variables
+============================== */
+:root {
+    --orange: #FF6B00;
+    --purple: #4B0082;
+    --light-bg: #F5F7FA;
+    --white: #FFF;
+    --text-dark: #333;
+    --text-gray: #666;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    --transition: all 0.3s ease;
+    --gold: #FFD700;
+    --silver: #C0C0C0;
+    --bronze: #CD7F32;
+    --success: #4CAF50;
+    --warning: #FFC107;
+    --danger: #f44336;
+    --primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* ==============================
+   Global Styles
+============================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--primary-font);
+}
+
+body {
+    background-color: var(--light-bg);
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ==============================
+   Sidebar Styles
+============================== */
+.sidebar {
+    width: 280px;
+    background-color: var(--orange);
+    padding: 2rem 0;
+    height: 100vh;
+    position: fixed;
+    color: var(--white);
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    padding: 0 2rem;
+    margin-bottom: 2rem;
+}
+
+.nav-group {
+    margin-bottom: 1.5rem;
+}
+
+.nav-title {
+    padding: 0.5rem 2rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-item {
+    padding: 0.75rem 2rem;
+    display: flex;
+    align-items: center;
+    color: var(--white);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.nav-item.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-icon {
+    margin-right: 0.75rem;
+    width: 20px;
+    text-align: center;
+}
+
+/* ==============================
+   Main Content Styles
+============================== */
+.main-content {
+    flex: 1;
+    margin-left: 280px;
+    padding: 2rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    font-size: 1.875rem;
+    color: var(--purple);
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: var(--text-gray);
+}
+
+/* ==============================
+   Common Grid Systems
+============================== */
+.analytics-grid,
+.stats-grid,
+.market-trends,
+.content-grid,
+.professor-list,
+.metrics-grid,
+.report-grid,
+.overview-grid,
+.skills-grid,
+.badge-grid,
+.ranking-grid,
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* ==============================
+   Common Card Styles
+============================== */
+.analytics-card,
+.stat-card,
+.chart-card,
+.professor-card,
+.metric-card,
+.report-card,
+.performance-card,
+.skill-card,
+.ranking-card,
+.feedback-table-section .table-container {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.analytics-card:hover,
+.stat-card:hover,
+.chart-card:hover,
+.professor-card:hover,
+.metric-card:hover,
+.report-card:hover,
+.performance-card:hover,
+.skill-card:hover,
+.ranking-card:hover,
+.feedback-table-section .table-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* ==============================
+   Interactive Features
+============================== */
+.interactive-card,
+.report-button,
+.achievement-badge {
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.interactive-card:hover,
+.report-button:hover,
+.achievement-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* ==============================
+   Tabs
+============================== */
+.tab-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tab {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--light-bg);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.tab:hover {
+    background-color: #e0e0e0;
+}
+
+.tab.active {
+    background-color: var(--orange);
+    color: var(--white);
+}
+
+/* ==============================
+   Rating Distribution
+============================== */
+.rating-distribution {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.rating-bar {
+    flex: 1;
+    height: 8px;
+    background-color: var(--light-bg);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.rating-fill {
+    height: 100%;
+    background-color: var(--orange);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.rating-count {
+    min-width: 40px;
+    text-align: right;
+    color: var(--text-gray);
+}
+
+/* ==============================
+   KPI Indicators
+============================== */
+.kpi-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--purple);
+    margin: 1rem 0;
+}
+
+.trend-indicator,
+.trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.trend-up {
+    color: var(--success);
+}
+
+.trend-down {
+    color: var(--danger);
+}
+
+/* ==============================
+   Responsive Design
+============================== */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 80px;
+    }
+    .nav-text,
+    .sidebar-header {
+        display: none;
+    }
+    .main-content {
+        margin-left: 80px;
+    }
+    .overview-grid,
+    .skills-grid,
+    .badge-grid,
+    .rankings-table,
+    .chart-container,
+    .rankings-grid,
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters,
+    .tab-group {
+        flex-direction: column;
+    }
+    .chart-container,
+    .demographics-chart,
+    .user-activity-chart {
+        height: 180px;
+    }
+    .filter-controls {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

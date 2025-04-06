@@ -1,0 +1,172 @@
+/* jobmarket.css */
+
+/* ==============================
+   Stats Grid and Cards
+============================== */
+
+/* Stats Grid Layout */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Individual Stat Card */
+.stat-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Stat Header */
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+/* Stat Title */
+.stat-title {
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* Stat Value */
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--purple);
+    margin: 1rem 0;
+}
+
+/* Stat Trend */
+.stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.trend-up {
+    color: #4CAF50;
+}
+
+.trend-down {
+    color: #f44336;
+}
+
+/* ==============================
+   Market Trends Section
+============================== */
+
+/* Market Trends Grid */
+.market-trends {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Individual Trend Card */
+.trend-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    
+    transition: var(--transition);
+}
+.trend-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+/* Category Tags Container */
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Individual Category Tag */
+.category-tag {
+    padding: 0.5rem 1rem;
+    background: var(--light-bg);
+    border-radius: 20px;
+    font-size: 0.875rem;
+    color: var(--text-dark);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.category-tag:hover {
+    background: var(--orange);
+    color: var(--white);
+}
+
+/* Salary Ranges */
+.salary-range {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--light-bg);
+    border-radius: 8px;
+    margin: 0.5rem 0;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.salary-range:hover {
+    background: #f0f0f0;
+}
+
+.job-title {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.salary-amount {
+    color: var(--orange);
+    font-weight: 500;
+}
+
+/* ==============================
+   Seasonal Analysis
+============================== */
+
+/* Seasonal Trends Chart */
+.seasonal-trends-chart {
+    height: 300px;
+}
+
+/* ==============================
+   Responsive Design Specific to Job Market
+============================== */
+
+/* Tablet and Below */
+@media (max-width: 1024px) {
+    .market-trends {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .chart-container {
+        height: 250px;
+    }
+}

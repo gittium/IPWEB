@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Executive Use Cases</title>
+  <link rel="stylesheet" href="css/styles.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div id="sidebar-placeholder"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <h1>Executive Use Cases</h1>
+    <div class="filter-section">
+      <label>Start:</label>
+      <input type="date" id="startDate" />
+
+      <label>End:</label>
+      <input type="date" id="endDate" />
+
+      <label>Category:</label>
+      <select id="category">
+        <option value="">All</option>
+      </select>
+      <label>Status:</label>
+      <select id="status">
+        <option value="">All</option>
+      </select>
+      <label>Reward:</label>
+      <select id="reward">
+        <option value="">All</option>
+      </select>
+      <label>Teacher:</label>
+      <select id="teacher">
+        <option value="">All</option>
+      </select>
+      <button onclick="applyFilters()">Apply</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Supply vs Demand (Skills)</h3>
+        <div class="chart-container">
+          <canvas id="skillSupplyDemandChart"></canvas>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Job Duration (Days until close)</h3>
+        <div class="chart-container">
+          <canvas id="jobDurationChart"></canvas>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <h3>GPA vs. Rating (Scatter)</h3>
+        <div class="chart-container">
+          <canvas id="gpaRatingChart"></canvas>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Turnover (Accepted vs. Rejected vs. Pending)</h3>
+        <div class="chart-container">
+          <canvas id="turnoverChart"></canvas>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Monthly Expenditure</h3>
+        <div class="chart-container">
+          <canvas id="monthlyExChart"></canvas>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <h3>Top Teachers by Success</h3>
+        <div class="chart-container">
+          <canvas id="topTeachersSuccessChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // load the sidebar
+    async function loadSidebar(){
+      try{
+        const resp = await fetch('sidebar.html');
+        if(!resp.ok) throw new Error("Failed to load sidebar");
+        const sidebarHTML = await resp.text();
+        document.getElementById('sidebar-placeholder').innerHTML = sidebarHTML;
+      }catch(e){ console.error(e);}
+    }
+    document.addEventListener('DOMContentLoaded', loadSidebar);
+  </script>
+  <script src="js/execusecase.js"></script>
+</body>
+</html>
