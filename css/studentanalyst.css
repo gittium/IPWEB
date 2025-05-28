@@ -1,0 +1,221 @@
+/* studentanaly.css */
+
+/* ==============================
+   Filters Section
+============================== */
+.filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.filter-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: var(--white);
+    min-width: 180px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-select:hover {
+    border-color: var(--orange);
+}
+
+/* ==============================
+   Performance Overview Grid
+============================== */
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* ==============================
+   Performance Cards
+============================== */
+.performance-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.performance-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.metric-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--purple);
+    margin: 1rem 0;
+}
+
+.metric-label {
+    color: var(--text-gray);
+    font-size: 0.875rem;
+}
+
+/* ==============================
+   Progress Bar
+============================== */
+.progress-bar {
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* ==============================
+   Rankings Table
+============================== */
+.rankings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.rankings-table th,
+.rankings-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.rankings-table th {
+    background: #f8f9fa;
+    font-weight: 500;
+    color: var(--text-gray);
+}
+
+.rankings-table tr:hover {
+    background: #f8f9fa;
+}
+
+.rank-number {
+    font-weight: bold;
+    color: var(--orange);
+}
+
+/* ==============================
+   Achievement Badges
+============================== */
+.badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.achievement-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.achievement-badge:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.badge-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.badge-label {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-dark);
+}
+
+/* ==============================
+   Trend Indicators
+============================== */
+.trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.trend-up {
+    color: #2e7d32;
+}
+
+.trend-down {
+    color: #c62828;
+}
+
+/* ==============================
+   Interactive Features
+============================== */
+.interactive-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    transition: var(--transition);
+}
+
+.legend-item:hover {
+    background-color: #f8f9fa;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+/* ==============================
+   Responsive Design
+============================== */
+@media (max-width: 768px) {
+    .filters {
+        flex-direction: column;
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .rankings-table {
+        font-size: 0.875rem;
+    }
+
+    .badge-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
