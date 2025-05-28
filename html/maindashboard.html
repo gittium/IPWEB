@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Dashboard</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/maindashboard.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+    <style>
+        .stat-filter {
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        
+        .filter-container {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .stat-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .chart-title {
+            margin: 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Main Dashboard</h1>
+            <p class="page-subtitle">Overview of platform activity</p>
+        </div>
+
+        <!-- Global Filters - ยังคงเก็บไว้สำหรับการใช้งานส่วนกลาง -->
+        <div class="container mt-3 mb-4">
+            <div class="card p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Global Filters</h5>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+                        <i class="bi bi-funnel"></i> Toggle Global Filters
+                    </button>
+                </div>
+        
+                <div id="filterCollapse" class="collapse mt-3">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="reward" class="form-label">Reward</label>
+                            <select class="form-select" id="reward">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-12 text-end">
+                            <button class="btn btn-primary" onclick="applyGlobalFilters()">Apply to All</button>
+                            <button class="btn btn-secondary" onclick="resetGlobalFilters()">Reset All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key Metrics -->
+        <div class="stats-grid">
+            <!-- Active Jobs with Individual Filter -->
+            <div class="stat-card">
+                <div class="stat-title-container">
+                    <h3 class="chart-title">งานที่เปิดอยู่ในระบบ</h3>
+                    <div class="stat-filter">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#activeJobsFilter" aria-expanded="false">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="activeJobsFilter" class="collapse filter-container">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label class="form-label small">Category</label>
+                            <select class="form-select form-select-sm" id="activeJobs_category">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Status</label>
+                            <select class="form-select form-select-sm" id="activeJobs_status">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Date Range</label>
+                            <input type="date" class="form-control form-control-sm" id="activeJobs_startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">To</label>
+                            <input type="date" class="form-control form-control-sm" id="activeJobs_endDate">
+                        </div>
+                        <div class="col-12 mt-2 text-end">
+                            <button class="btn btn-sm btn-primary" onclick="applyFilterToChart('activeJobs')">Apply</button>
+                            <button class="btn btn-sm btn-secondary" onclick="resetFilterForChart('activeJobs')">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-value" id="activeJobs">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="activeJobsChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Registered Students with Individual Filter -->
+            <div class="stat-card">
+                <div class="stat-title-container">
+                    <h3 class="chart-title">นักเรียนที่สมัครเข้ามาใช้ระบบ</h3>
+                    <div class="stat-filter">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#studentsFilter" aria-expanded="false">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="studentsFilter" class="collapse filter-container">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label class="form-label small">Major</label>
+                            <select class="form-select form-select-sm" id="students_major">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Year</label>
+                            <select class="form-select form-select-sm" id="students_year">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2 text-end">
+                            <button class="btn btn-sm btn-primary" onclick="applyFilterToChart('students')">Apply</button>
+                            <button class="btn btn-sm btn-secondary" onclick="resetFilterForChart('students')">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-value" id="totalStudents">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="studentsChart"></canvas>
+                </div>
+            </div>
+        </div>
+       
+        <div class="stats-grid">
+            <!-- Job Categories with Individual Filter -->
+            <div class="stat-card">
+                <div class="stat-title-container">
+                    <h3 class="chart-title">หมวดหมู่งานที่อยู่ในระบบ</h3>
+                    <div class="stat-filter">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#categoriesFilter" aria-expanded="false">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="categoriesFilter" class="collapse filter-container">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label class="form-label small">Status</label>
+                            <select class="form-select form-select-sm" id="categories_status">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Date Range</label>
+                            <input type="date" class="form-control form-control-sm" id="categories_startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">To</label>
+                            <input type="date" class="form-control form-control-sm" id="categories_endDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Show Top</label>
+                            <select class="form-select form-select-sm" id="categories_limit">
+                                <option value="5">Top 5</option>
+                                <option value="10">Top 10</option>
+                                <option value="0" selected>All</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2 text-end">
+                            <button class="btn btn-sm btn-primary" onclick="applyFilterToChart('jobCategories')">Apply</button>
+                            <button class="btn btn-sm btn-secondary" onclick="resetFilterForChart('jobCategories')">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="jobCategoriesChart"></canvas>
+                </div>
+                <div id="jobCategoriesTableContainer"></div>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <!-- Applications Per Job with Individual Filter -->
+            <div class="stat-card">
+                <div class="stat-title-container">
+                    <h3 class="chart-title">จำนวนผู้สมัครในเเต่ละงาน</h3>
+                    <div class="stat-filter">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#applicationsFilter" aria-expanded="false">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="applicationsFilter" class="collapse filter-container">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <label class="form-label small">Category</label>
+                            <select class="form-select form-select-sm" id="applications_category">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Date Range</label>
+                            <input type="date" class="form-control form-control-sm" id="applications_startDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">To</label>
+                            <input type="date" class="form-control form-control-sm" id="applications_endDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Show Top</label>
+                            <select class="form-select form-select-sm" id="applications_limit">
+                                <option value="5">Top 5</option>
+                                <option value="10">Top 10</option>
+                                <option value="0" selected>All</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2 text-end">
+                            <button class="btn btn-sm btn-primary" onclick="applyFilterToChart('applications')">Apply</button>
+                            <button class="btn btn-sm btn-secondary" onclick="resetFilterForChart('applications')">Reset</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="applicationsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Semester and Year Filter Controls for the Job Comparison Graph -->
+        <div class="stats-grid">
+            <!-- Jobs Over Time with Individual Filter -->
+            <div class="stat-card">
+                <div class="stat-title-container">
+                    <h3 class="chart-title">เปรียบเทียบจำนวนงานที่อยู่ในระบบทั้งหมดเเละงานที่สำเร็จเเล้ว</h3>
+                    <div class="stat-filter">
+                        <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#jobsOverTimeFilter" aria-expanded="false">
+                            <i class="bi bi-funnel"></i> Filter
+                        </button>
+                    </div>
+                </div>
+                <div id="jobsOverTimeFilter" class="collapse filter-container">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <label class="form-label small">Academic Year</label>
+                            <select class="form-select form-select-sm" id="jobsOverTime_year">
+                                <option value="">All Years</option>
+                                <option value="2023">2023-2024</option>
+                                <option value="2024">2024-2025</option>
+                                <option value="2025" selected>2025-2026</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small">Semester</label>
+                            <select class="form-select form-select-sm" id="jobsOverTime_semester">
+                                <option value="">All Semesters</option>
+                                <option value="first">First (Jun 25 - Oct 25)</option>
+                                <option value="second">Second (Nov 25 - Mar 25)</option>
+                                <option value="summer">Summer (Mar 30 - Jun 1)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small">View Type</label>
+                            <select class="form-select form-select-sm" id="jobsOverTime_viewType">
+                                <option value="monthly">Monthly</option>
+                                <option value="semester">By Semester</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mt-2">
+                            <div id="dateRangeInfo" class="small text-muted mb-2"></div>
+                            <div class="text-end">
+                                <button class="btn btn-sm btn-primary" onclick="applyFilterToChart('jobsOverTime')">Apply</button>
+                                <button class="btn btn-sm btn-secondary" onclick="resetFilterForChart('jobsOverTime')">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+                    
+                    <div class="debug-info small text-muted mt-2 p-2 border-top" style="display: none;">
+                        <strong>Debug Info:</strong> <span id="jobsOverTime_debug"></span>
+                        <button class="btn btn-sm btn-link" onclick="document.getElementById('jobsOverTime_debug').parentNode.style.display='none'">Hide</button>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="jobsOverTimeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+
+    </main>
+
+    <!-- Sidebar Loader -->
+    <script>
+        async function loadSidebar() {
+            try {
+                const response = await fetch('sidebar.html');
+                if (!response.ok) throw new Error('Failed to load sidebar');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-placeholder').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Sidebar Load Error:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadSidebar);
+    </script>
+    
+    <!-- Ensure Bootstrap JavaScript is Included -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS for Dashboard -->
+    <script src="/js/maindashboard.js"></script>
+</body>
+</html>

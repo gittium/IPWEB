@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Analytics - Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/studentanalyst.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .filter-row {
+            margin-bottom: 0.75rem;
+        }
+        .filter-item {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-placeholder"></div>
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Student Performance Analytics</h1>
+            <p class="page-subtitle">Track student achievements and development</p>
+        </div>
+
+        <!-- Global Filter controls -->
+        <div class="container mt-3">
+            <div class="card p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Global Filters</h5>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#globalFilterCollapse" aria-expanded="false" aria-controls="globalFilterCollapse">
+                        <i class="bi bi-funnel"></i> Toggle Filters
+                    </button>
+                </div>
+        
+                <div id="globalFilterCollapse" class="collapse mt-3">
+                    <div class="row g-3">
+                        <!-- Date Range -->
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                        
+                        <!-- Job Categories -->
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">Job Category</label>
+                            <select class="form-select" id="category">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Status -->
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Job Status</label>
+                            <select class="form-select" id="status">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Reward and Teacher -->
+                        <div class="col-md-3">
+                            <label for="reward" class="form-label">Reward Type</label>
+                            <select class="form-select" id="reward">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="teacher" class="form-label">Posted by Teacher</label>
+                            <select class="form-select" id="teacher">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Major and Year -->
+                        <div class="col-md-3">
+                            <label for="major" class="form-label">Major</label>
+                            <select class="form-select" id="major">
+                                <option value="">All</option>
+                                <option value="1">Computer Science</option>
+                                <option value="2">Information Technology</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select class="form-select" id="year">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Apply Button -->
+                        <div class="col-12 text-end">
+                            <button class="btn btn-primary" onclick="applyGlobalFilters()">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="overview-grid">
+            <!-- Active Students Card -->
+            <div class="stat-card">
+                <div class="chart-header">
+                    <h3 class="stat-title">Active Students</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#activeStudentsFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Active Students Specific Filters -->
+                <div class="collapse mb-3" id="activeStudentsFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="activeStudentsMajor">Major</label>
+                            <select id="activeStudentsMajor" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Computer Science</option>
+                                <option value="2">Information Technology</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="activeStudentsYear">Year</label>
+                            <select id="activeStudentsYear" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyActiveStudentsFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stat-value" id="totalStudents">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="studentsChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Rating Students Card -->
+            <div class="performance-card">
+                <div class="chart-header">
+                    <h3>Rating Students</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#ratingFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Rating Students Specific Filters -->
+                <div class="collapse mb-3" id="ratingFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="ratingCategory">Job Category</label>
+                            <select id="ratingCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="ratingTeacher">Teacher</label>
+                            <select id="ratingTeacher" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyRatingFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="metric-value" id="studentRating">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="studentRatingChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Major Distribution Card -->
+            <div class="analytics-card">
+                <div class="chart-header">
+                    <h3>Major Distribution</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#majorFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Major Distribution Specific Filters -->
+                <div class="collapse mb-3" id="majorFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="majorYear">Year</label>
+                            <select id="majorYear" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="majorCategory">Job Category</label>
+                            <select id="majorCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyMajorFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="majorDistChart"></canvas>
+                </div>
+            </div>
+              
+            <!-- Average GPA Card -->
+            <div class="performance-card">
+                <div class="chart-header">
+                    <h3>Average GPA</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#gpaFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- GPA Specific Filters -->
+                <div class="collapse mb-3" id="gpaFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-4">
+                            <label for="gpaMajor">Major</label>
+                            <select id="gpaMajor" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Computer Science</option>
+                                <option value="2">Information Technology</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="gpaYear">Year</label>
+                            <select id="gpaYear" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="gpaCategory">Job Category</label>
+                            <select id="gpaCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyGpaFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="metric-value" id="avgGpa">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="avgGpaChart"></canvas>
+                </div>
+            </div>
+              
+            <!-- Top 5 Completed Card -->
+            <!-- <div class="analytics-card">
+                <div class="chart-header">
+                    <h3>Top 5 Completed</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#top5Filters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div> -->
+                
+                <!-- Top 5 Specific Filters -->
+                <!-- <div class="collapse mb-3" id="top5Filters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-4">
+                            <label for="top5Major">Major</label>
+                            <select id="top5Major" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Computer Science</option>
+                                <option value="2">Information Technology</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="top5Year">Year</label>
+                            <select id="top5Year" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="top5Limit">Show Top</label>
+                            <select id="top5Limit" class="form-select form-select-sm">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyTop5Filters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="top5CompletedChart"></canvas>
+                </div>
+            </div> -->
+        </div>
+        
+        <div class="overview-grid">
+            <!-- Applications per Student Card -->
+            <div class="performance-card">
+                <div class="chart-header">
+                    <h3>Applications per Student</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#appsPerStudentFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Apps Per Student Specific Filters -->
+                <div class="collapse mb-3" id="appsPerStudentFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-4">
+                            <label for="appsPerStudentMajor">Major</label>
+                            <select id="appsPerStudentMajor" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Computer Science</option>
+                                <option value="2">Information Technology</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="appsPerStudentYear">Year</label>
+                            <select id="appsPerStudentYear" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Year 1</option>
+                                <option value="2">Year 2</option>
+                                <option value="3">Year 3</option>
+                                <option value="4">Year 4</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="appsPerStudentLimit">Show Top</label>
+                            <select id="appsPerStudentLimit" class="form-select form-select-sm">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyAppsPerStudentFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="metric-value" id="appsPerStudent">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="appsPerStudentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        async function loadSidebar() {
+            try {
+                const response = await fetch('sidebar.html');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-placeholder').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Failed to load sidebar:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadSidebar);
+    </script>
+    
+    <!-- Ensure Bootstrap JavaScript is Included -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/studentanalyst.js"></script>
+</body>
+</html>

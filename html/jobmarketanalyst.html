@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Market Insights - Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/jobmarketanalyst.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .filter-section {
+            margin-bottom: 1rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .stat-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+            color: #333;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #FF6B00;
+            margin-bottom: 1rem;
+        }
+        .insight-card {
+            background: #f8f9fa;
+            border-left: 4px solid #FF6B00;
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .insight-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        .insight-content {
+            color: #555;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .filter-row {
+            margin-bottom: 0.75rem;
+        }
+        .filter-item {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-placeholder"></div>
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Job Market Insights</h1>
+            <p class="page-subtitle">Track job trends, compensation, and market demand</p>
+        </div>
+                
+        <!-- Global Filter controls -->
+        <div class="container mt-3">
+            <div class="card p-3 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Global Filters</h5>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#globalFilterCollapse" aria-expanded="false" aria-controls="globalFilterCollapse">
+                        <i class="bi bi-funnel"></i> Toggle Filters
+                    </button>
+                </div>
+        
+                <div id="globalFilterCollapse" class="collapse mt-3">
+                    <div class="row g-3">
+                        <!-- Date Range -->
+                        <div class="col-md-3">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate">
+                        </div>
+                        
+                        <!-- Job Categories and Subcategories -->
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">Job Category</label>
+                            <select class="form-select" id="category">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="subcategory" class="form-label">Subcategory</label>
+                            <select class="form-select" id="subcategory">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Status and Reward -->
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Job Status</label>
+                            <select class="form-select" id="status">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="reward" class="form-label">Reward Type</label>
+                            <select class="form-select" id="reward">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Teacher -->
+                        <div class="col-md-3">
+                            <label for="teacher" class="form-label">Posted by Teacher</label>
+                            <select class="form-select" id="teacher">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3"></div>
+                        
+                        <!-- Apply Button -->
+                        <div class="col-12 text-end">
+                            <button class="btn btn-primary" onclick="applyGlobalFilters()">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Stats Overview Row -->
+        <div class="stats-grid">
+            <!-- Active Jobs Card -->
+            <div class="stat-card">
+                <div class="chart-header">
+                    <h3 class="stat-title">งานที่เปิดอยู่ในระบบ</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#activeJobsFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Active Jobs Specific Filters -->
+                <div class="collapse mb-3" id="activeJobsFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="activeJobStatus">Job Status</label>
+                            <select id="activeJobStatus" class="form-select form-select-sm">
+                                <option value="1">Open Only</option>
+                                <option value="">All</option>
+                                <option value="2">Closed Only</option>
+                                <option value="4">Full Only</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="activeJobCategory">Category</label>
+                            <select id="activeJobCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyActiveJobsFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-value" id="activeJobs">Loading...</div>
+                <div class="chart-container">
+                    <canvas id="activeJobsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Pay Rate Card -->
+            <div class="stat-card">
+                <div class="chart-header">
+                    <h3 class="stat-title">จำเเนกหมวดหมู่งานตามประเภทค่าตอบเเทน</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#payRateFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Pay Rate Specific Filters -->
+                <div class="collapse mb-3" id="payRateFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="payRateCategory">Category</label>
+                            <select id="payRateCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="payRateTeacher">Teacher</label>
+                            <select id="payRateTeacher" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyPayRateFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-value" id="averagePayRate">
+                    <div class="loading">Loading...</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="payRateChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Completion Rate Card -->
+            <div class="stat-card">
+                <div class="chart-header">
+                    <h3 class="stat-title">อัตราความสำเร็จของการสมัครงาน</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#completionRateFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Completion Rate Specific Filters -->
+                <div class="collapse mb-3" id="completionRateFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="completionRateCategory">Category</label>
+                            <select id="completionRateCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="completionRateTeacher">Teacher</label>
+                            <select id="completionRateTeacher" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyCompletionRateFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-value" id="completionRate">
+                    <div class="loading">Loading...</div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="successRateChart"></canvas>
+                </div>
+            </div>
+        </div>
+       
+        <!-- Application Status Distribution -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">จำเเนกประเภทการตอบรับใบสมัครงานในระบบ</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#appStatusFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- App Status Specific Filters -->
+                <div class="collapse mb-3" id="appStatusFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-4">
+                            <label for="appStatusCategory">Category</label>
+                            <select id="appStatusCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="appStatusTeacher">Teacher</label>
+                            <select id="appStatusTeacher" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="appStatusReward">Reward Type</label>
+                            <select id="appStatusReward" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyAppStatusFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="applicationStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Categories and Status Distribution -->
+        <div class="chart-grid">
+            <!-- Job Categories Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Job Categories Distribution</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#categoriesFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Categories Specific Filters -->
+                <div class="collapse mb-3" id="categoriesFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="categoriesStatus">Job Status</label>
+                            <select id="categoriesStatus" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Open Only</option>
+                                <option value="2">Closed Only</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="categoriesReward">Reward Type</label>
+                            <select id="categoriesReward" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyCategoriesFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="jobCategoriesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Job Status Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Job Status Distribution</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#statusFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Status Specific Filters -->
+                <div class="collapse mb-3" id="statusFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="statusCategory">Category</label>
+                            <select id="statusCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="statusReward">Reward Type</label>
+                            <select id="statusReward" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyStatusFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="jobStatusChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reward Type and Job Subcategories Distribution -->
+        <div class="chart-grid">
+            <!-- Reward Type Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reward Type Distribution</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#rewardFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Reward Specific Filters -->
+                <div class="collapse mb-3" id="rewardFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="rewardCategory">Category</label>
+                            <select id="rewardCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="rewardStatus">Job Status</label>
+                            <select id="rewardStatus" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Open Only</option>
+                                <option value="2">Closed Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyRewardFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="rewardTypeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Job Subcategories Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Job Subcategories Distribution</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#subcategoriesFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Subcategories Specific Filters -->
+                <div class="collapse mb-3" id="subcategoriesFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-6">
+                            <label for="subcategoriesCategory">Main Category</label>
+                            <select id="subcategoriesCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-6">
+                            <label for="subcategoriesStatus">Job Status</label>
+                            <select id="subcategoriesStatus" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Open Only</option>
+                                <option value="2">Closed Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applySubcategoriesFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="jobSubcatChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Trends Over Time -->
+        <div class="chart-grid">
+            <!-- Jobs Created Over Time -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Jobs Created Over Time</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#trendFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Trend Specific Filters -->
+                <div class="collapse mb-3" id="trendFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-4">
+                            <label for="trendViewType">View Type</label>
+                            <select id="trendViewType" class="form-select form-select-sm">
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="trendCategory">Category</label>
+                            <select id="trendCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="trendStatus">Status</label>
+                            <select id="trendStatus" class="form-select form-select-sm">
+                                <option value="">All</option>
+                                <option value="1">Open Only</option>
+                                <option value="2">Closed Only</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyTrendFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="jobsTrendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Jobs Closed Over Time -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Jobs Closed Over Time</h3>
+                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#closedFilters">
+                        <i class="bi bi-sliders"></i> Filters
+                    </button>
+                </div>
+                
+                <!-- Closed Jobs Specific Filters -->
+                <div class="collapse mb-3" id="closedFilters">
+                    <div class="filter-row row">
+                        <div class="filter-item col-md-4">
+                            <label for="closedViewType">View Type</label>
+                            <select id="closedViewType" class="form-select form-select-sm">
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="closedCategory">Category</label>
+                            <select id="closedCategory" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                        <div class="filter-item col-md-4">
+                            <label for="closedReward">Reward Type</label>
+                            <select id="closedReward" class="form-select form-select-sm">
+                                <option value="">All</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="col-12">
+                            <button id="applyClosedFilters" class="btn btn-primary btn-sm">
+                                <i class="bi bi-search"></i> Apply Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="jobsClosedChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+     
+        
+    </main>
+    <script>
+        async function loadSidebar() {
+            try {
+                const response = await fetch('sidebar.html');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const sidebarHTML = await response.text();
+                document.getElementById('sidebar-placeholder').innerHTML = sidebarHTML;
+            } catch (error) {
+                console.error('Failed to load sidebar:', error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadSidebar);
+    </script>
+    
+    <!-- Ensure Bootstrap JavaScript is Included -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/jobmarketanalyst.js"></script>
+</body>
+</html>
