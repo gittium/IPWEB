@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    display: flex;
+}
+
+/* Main Content */
+.main-content {
+    
+    padding: 20px;
+    flex-grow: 1;
+}
+
+h1 {
+    
+    margin-top: 40px;
+    margin-left: 40px;
+}
+
+p {
+   
+    margin-bottom: 50px;
+    margin-top: 30px;
+    font-size: 20px;
+}
+
+p1 {
+    
+    margin-bottom: 50px;
+    margin-top: 30px;
+    font-size: 20px;
+    margin-left: 40px;
+}
+
+/* Dashboard Cards */
+.dashboard {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 1.5em;
+    
+}
+
+.card p {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+/* Hover Effects */
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Role Container */
+.role-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.role-container div {
+    text-align: center;
+}
+
+.role-container h3 {
+    font-size: 1.2em;
+    
+}

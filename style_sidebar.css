@@ -1,0 +1,100 @@
+/* ทำให้ containersb ใช้ flexbox สำหรับจัดแสดง sidebar และ main content ข้างๆ กัน */
+.containersb {
+    display: flex;
+    height: 100vh; /* ทำให้ containersb สูงเต็มจอ */
+    width: 100%; /* ใช้ความกว้างเต็มหน้าจอ */
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 230px; /* ความกว้างของ Sidebar */
+    background-color: #FF6F00; 
+    padding: 20px; /* ระยะห่างภายใน Sidebar */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* จัดวางเนื้อหา */
+    border-top-right-radius: 30px; /* มุมบนขวาโค้ง */
+    border-bottom-right-radius: 30px; /* มุมล่างขวาโค้ง */
+    position: fixed; /* ทำให้ Sidebar คงที่ */
+    height: 100vh; /* ให้ Sidebar สูงเต็มหน้าจอ */
+    top: 0; /* ให้ Sidebar อยู่ที่ตำแหน่งบนสุด */
+}
+
+/* การตั้งค่าเมนูใน Sidebar */
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+    color: #D6D6D6;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-item i {
+    margin-right: 18px;
+    font-size: 25px;
+}
+
+.nav-item {
+    margin-left: 10px;
+}
+
+.nav-item.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* เพิ่มขีดขาวทางซ้ายของเมนูที่ active */
+.nav-item.active::before {
+    content: "";
+    position: relative;
+    left: 0;
+    top: 45%;
+    width: 5px;
+    height: 5px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/* การตั้งค่า dropdown menu */
+.dropdown-menu {
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.dropdown-menu.active {
+    display: flex;
+    margin-left: 30px;
+}
+
+.dropdown-toggle i:last-child {
+    margin-left: auto;
+    padding-left: 8px;
+}
+
+/* ปรับขนาดปุ่ม toggle บนมือถือ */
+.sidebar-toggle {
+    display: none;
+    position: relative;
+    top: 15px;
+    left: 15px;
+    background: #FF6F00;
+    color: white;
+    border: none;
+    font-size: 24px;
+    padding: 5px 10px;
+    z-index: 1001;
+    border-radius: 5px;
+    cursor: pointer;
+}

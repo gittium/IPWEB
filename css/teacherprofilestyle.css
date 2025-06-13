@@ -1,0 +1,423 @@
+.detail-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* จัดแนวกลางในแกนหลัก (horizontal) */
+    justify-content: center;
+    /* จัดแนวกลางในแกนย่อย (vertical) */
+    text-align: center;
+    /* จัดข้อความให้อยู่กลางในแต่ละบรรทัด */
+}
+
+:root {
+    --white: #fff;
+    --light-bg: #f9f9f9;
+    --border-color: #e0e0e0;
+    --text-dark: #333;
+    --text-gray: #777;
+    --orange: #f97316;
+    --success: #22c55e;
+    --warning: #eab308;
+    --error: #ef4444;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: white;
+    min-height: 100vh;
+}
+
+.profile-container {
+    background-color: white;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    color: #333;
+}
+
+.header {
+    position: relative;
+    background: linear-gradient(to right, #FF6F00);
+    height: 200px;
+}
+
+.profile {
+    position: absolute;
+    bottom: -90px;
+    left: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 220px;
+    width: 210px;
+    padding: 5px;
+    border-radius: 8px;
+    background-color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit:cover;
+}
+
+.detail-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: white;
+    margin-bottom: 20px;
+}
+#upload_form input[type="file"] {
+    margin-top: 10px;
+}
+
+.detail-name {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.sub-title {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.edit-button,
+.addJob-button,
+.save-button {
+    background-color: #FF7C00;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 15px;
+}
+
+.edit-button:hover {
+    background-color: #350062;
+}
+
+.container {
+    margin: 10px;
+    padding: 20px; /* เพิ่ม padding เพื่อให้เนื้อหาภายในไม่แออัด */
+    background: #fff;
+    margin-left: 50px;
+    width: 90%; /* กำหนดความกว้างเป็น 90% ของหน้าจอ */
+    max-width: 1200px; /* กำหนดขนาดความกว้างสูงสุดที่ 1200px */
+    box-sizing: border-box; /* รวม padding และ border ในการคำนวณขนาด */
+}
+
+.container.loading {
+    padding: 40px; /* เพิ่ม padding ในขณะกำลังโหลดเพื่อแสดงพื้นที่โล่งๆ */
+    text-align: center; /* ทำให้ข้อความอยู่กลางเมื่อโหลด */
+    min-height: 400px; /* กำหนดความสูงขั้นต่ำเพื่อให้เนื้อหามีพื้นที่ */
+}
+
+.container.loaded {
+    padding: 20px; /* ลด padding เมื่อโหลดข้อมูลเสร็จ */
+    display: block;
+}
+
+
+
+
+h3 {
+    margin-bottom: 10px;
+    color: #350062;
+    font-size: 1.4em;
+}
+
+p {
+    margin: 1px;
+}
+
+.sub-header {
+    font-size: 0.9em;
+    color: orange;
+    font-weight: normal;
+    margin-left: 10px;
+}
+
+.Contact,
+.skills,
+.interest,
+.experience {
+    background-color: rgba(244, 244, 244, 0.8);
+    margin-bottom: 50px;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.notification-btn {
+    position: relative;
+    padding: 8px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    background: #ef4444;
+    border-radius: 50%;
+    color: white;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+.card-top {
+    background-color: #E5E7EB;
+    height: 200px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;    /* ป้องกันเนื้อหาล้นออกมา */
+}
+
+.headerTop {
+    background-color: #4E2A84;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.headerTop img {
+    height: 30px;
+}
+
+.header-nav {
+    display: flex;
+    gap: 20px;
+}
+
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.footer {
+    background-color: #4E2A84;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.headerTopImg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ตั้งค่าขนาดของกล่องแจ้งเตือน */
+.notifications-card {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    display: none;
+    padding: 15px;
+    z-index: 1000;
+}
+
+/* ตั้งค่า header ของกล่องแจ้งเตือน */
+.headerNoti {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.notification-count {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+.tabs {
+    display: flex;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab {
+    padding: 1rem 1.5rem;
+    color: #aaa;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+}
+
+.tab.active {
+    color: #ef4444;
+    border-bottom-color: #ef4444;
+}
+
+/* **ปรับแต่งส่วนรายการแจ้งเตือน** */
+.notification-list {
+    max-height: 250px; /* กำหนดความสูงสูงสุด */
+    overflow-y: auto; /* เปิดให้เลื่อนขึ้นลงได้ */
+    padding-right: 10px; /* ป้องกันการซ้อนกับ scroll bar */
+}
+
+.notification-item {
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    position: relative;
+}
+
+.notification-item:hover {
+    background-color: #f9f9f9;
+}
+
+.notification-item.unread::before {
+    content: '';
+    position: absolute;
+    top: 1.5rem;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #ef4444;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    color: #333;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.notification-message {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.notification-time {
+    color: #aaa;
+    font-size: 0.75rem;
+}
+
+.card-top img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* ใช้ cover เพื่อให้ภาพเต็มกรอบ */
+}
+
+.menu-review {
+    display: flex;
+    justify-content: space-between; /* จัดให้ข้อความและปุ่มอยู่กึ่งกลางแนวตั้ง */
+    align-items: center; /* จัดให้ข้อความและปุ่มอยู่กึ่งกลางแนวตั้ง */
+    padding: 10px 20px; /* เพิ่มระยะห่าง */
+}
+
+.menu-review h3 {
+    margin: 0; /* ลบ margin ของ h3 */
+    font-size: 20px;
+    font-weight: bold;
+    flex: 1; /* ให้ข้อความมีพื้นที่เต็มที่ */
+}
+
+.menu-review .btn-review {
+    display: inline-block;
+    background: #ff9800; /* สีพื้นหลังปุ่ม (ส้ม) */
+    color: white; /* สีตัวอักษร */
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px; /* ขอบมน */
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* เงาเพิ่มมิติ */
+    margin-left: auto; /* ย้ายปุ่มไปทางขวา */
+}
+
+.menu-review .btn-review:hover {
+    transform: translateY(-3px); /* ลอยขึ้น */
+    background: #222; /* เปลี่ยนสีปุ่มเป็นดำ */
+    color: #ffd700; /* เปลี่ยนสีตัวอักษรเป็นสีเหลือง */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3); /* เพิ่มเงาเมื่อ hover */
+}
+
+/* ทำให้ scrollbar ดูสวยขึ้น */
+.notification-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 10px;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+}

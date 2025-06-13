@@ -1,0 +1,333 @@
+
+/****** joinus Styles ******/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* Main Content */
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-weight: normal;
+    border-bottom: 2px #333;
+    padding-bottom: 5px;
+    flex: 1; /* ทำให้ข้อความชิดขวาหากมีองค์ประกอบอื่นเพิ่ม */
+}
+
+.applicant-card {
+    background-color: #ffff;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.applicant-photo-joinus img {
+    width: 100%;
+    height: 250px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 1.2rem; 
+}
+
+.applicant-details {
+    width: 100%;
+    background-color: #D3D3D3;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    padding: 30px 15px 30px 30px;
+    font-weight: lighter;
+}
+.applicant-reward {
+    width: 100%;
+    background-color: #D3D3D3;
+    border-radius: 10px;
+    display: flex;
+    
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    padding: 15px 15px 15px 15px;
+    font-weight: lighter;
+}
+
+.applicant-details-name {
+    width: 100%;
+    height: 50px;
+    background-color: #D3D3D3;
+    border-radius: 10px;
+    display: flex;
+    justify-content: start; /* จัดให้องค์ประกอบเริ่มต้นจากซ้าย */
+    align-items: center;
+    padding: 10px; /* เพิ่ม padding รอบๆ */
+    margin-bottom: 20px;
+    font-size: 0.9 rem;
+    gap: 10px; /* ระยะห่างระหว่างรูปและข้อความ */
+}
+
+.applicant-details-name img.profile-pic {
+    width: 40px; /* กำหนดความกว้างของรูป */
+    height: 40px; /* กำหนดความสูงของรูป */
+    border-radius: 50%; /* ทำให้รูปเป็นวงกลม */
+    object-fit: cover; /* ให้รูปพอดีกับกรอบ */
+    border: 2px solid #ccc; /* เพิ่มขอบให้รูปภาพ */
+}
+
+.applicant-details-name span {
+    font-weight: lighter;
+}
+
+
+.applicant-name {
+    font-size: 1.2 rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.details {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.details label {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #555;
+}
+
+.details span {
+    font-size: 1rem;
+}
+
+.jobdetails {
+    width: 100%;
+    height: 150px;
+    background-color: #E0E0E0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px  #CCC;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.title-container {
+    display: flex;
+    align-items: center; /* จัดแนวให้องค์ประกอบอยู่ตรงกลางแนวตั้ง */
+    border-bottom: 1px solid #333; /* เส้นใต้ยาวเต็มความกว้าง */
+    padding-bottom: 0.1px; /* ระยะห่างระหว่างข้อความและเส้น */
+    margin-bottom: 20px; /* ระยะห่างระหว่างหัวข้อและเนื้อหาด้านล่าง */
+}
+
+.back-arrow {
+    display: inline-flex;
+    width: 10px;
+    height: 10px;
+    margin-right: 10px; /* ระยะห่างระหว่างลูกศรและข้อความ */
+    border-left: 2px solid #333; /* สร้างเส้นเฉียง */
+    border-bottom: 2px solid #333;
+    transform: rotate(45deg); /* หมุนเส้นให้เป็นลูกศร */
+    cursor: pointer;   
+    position: absolute; /* ใช้ position เพื่อกำหนดตำแหน่ง */
+    top: 10%; /* ระยะห่างจากขอบด้านบน */
+    left: 20px; /* ระยะห่างจากขอบด้านซ้าย */     
+}
+
+.back-arrow:hover {
+    border-color: #555; /* เปลี่ยนสีเมื่อวางเมาส์ */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* กระจายปุ่มไปยังขอบซ้ายและขวา */
+    align-items: center; /* จัดให้ปุ่มอยู่กึ่งกลางในแนวตั้ง */
+    width: 100%; /* ใช้พื้นที่เต็มของคอนเทนเนอร์ */
+    margin-top: 50px; /* เพิ่มระยะห่างจากด้านบน */
+}
+
+.joinus-btn {
+    background-color: #FFA500;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.joinus-btn:hover {
+    background-color: #CC8400;
+}
+
+ 
+.report-btn {
+    color: #333; /* สีของตัวหนังสือ */
+    background: none; /* ลบพื้นหลัง */
+    padding: 0; /* ลบระยะห่างภายใน */
+    border: none; /* ลบกรอบ */
+    border-radius: 0; /* ลบมุมโค้ง */
+    font-size: 1rem; /* ขนาดตัวอักษร */
+    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นรูปมือ */
+    text-decoration: underline; /* เพิ่มเส้นใต้เพื่อให้ดูเหมือนลิงก์ */
+    transition: color 0.3s; /* เพิ่มเอฟเฟกต์เปลี่ยนสี */
+}
+
+.report-btn:hover {
+    color: #333; /* เปลี่ยนสีเมื่อโฮเวอร์ */
+    /*text-decoration: none; /* ลบเส้นใต้เมื่อโฮเวอร์ */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center; 
+}
+
+.modal-body {
+    margin-bottom: 20px;
+    max-height: 300px; /* กำหนดความสูงสูงสุด */
+    overflow-y: auto; /* เปิดใช้งานการเลื่อนในแนวตั้ง */
+    padding-right: 10px; /* เพิ่มระยะห่างด้านขวาเพื่อให้ข้อความไม่ชิด scrollbar */
+    scrollbar-width: thin; /* ทำให้ scrollbar บาง */
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 8px; /* กำหนดความกว้างของ scrollbar */
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* สีของ scrollbar */
+    border-radius: 4px; /* เพิ่มความโค้งมนของ scrollbar */
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+    background-color: #999; /* สี scrollbar เมื่อเลื่อนเมาส์ */
+}
+
+.modal-body label {
+    display: block; /* ทำให้ label ขึ้นบรรทัดใหม่ */
+    margin-bottom: 10px; /* เพิ่มระยะห่างระหว่าง label */
+    font-size: 0.9rem; /* ขนาดข้อความของ label */
+    line-height: 1.4; /* เพิ่มระยะห่างระหว่างบรรทัดของ label */
+}
+
+.modal-body select {
+    display: block; /* ทำให้ select ขึ้นบรรทัดใหม่ */
+    width: 100%; /* ทำให้ select กว้างเต็มพื้นที่ */
+    margin-top: 10px; /* เพิ่มระยะห่างระหว่าง select กับ label ด้านบน */
+    padding: 5px; /* เพิ่ม padding ภายใน select */
+    font-size: 1rem; /* ขนาดข้อความของ select */
+    border-radius: 5px; /* เพิ่มความโค้งมนของขอบ */
+    border: 1px solid #ccc; /* ขอบสีเทา */
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancel-btn, .confirm-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background-color: #D3D3D3;
+}
+
+.confirm-btn {
+    background-color: #4E2A84;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #B0B0B0;
+}
+
+.confirm-btn:hover {
+    background-color: #3D1F6A;
+}
+
+.joinus-head {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    gap: 10px;
+    /* ระยะห่างระหว่างไอคอนกับข้อความ */
+    padding: 10px;
+    width: 100%;
+    /* ยืดเต็มความกว้างของหน้าจอ */
+    background-color: #ffffff;
+    /* พื้นหลังสีขาว */
+    border-radius: 8px;
+    /* มุมมน */
+    /* เพิ่มเงา */
+    margin-bottom: 25px;
+    padding-left: 20px;
+    margin-top: 50px;
+
+}
+
+
+.joinus-head i {
+    font-size: 24px;
+    /* ขนาดไอคอน */
+    color: #333;
+    /* สีของไอคอน */
+}
