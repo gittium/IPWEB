@@ -83,7 +83,3 @@ You can log in with the following sample credentials to test the different user 
     -   **Password**: `exec1234`
 
 *Note: You will need to ensure these users exist in your database.*
-
-## Folder Structure
-
-The project is structured to separate concerns, making it organized and maintainable.
