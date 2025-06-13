@@ -1,7 +1,7 @@
 # CSIT Job Finder & Skill Development Platform
 
 <p align="center">
-  <img src="./images/logo.png" alt="Naresuan University CSIT Logo" width="300">
+  <img src="./logo.png" alt="Naresuan University CSIT Logo" width="300">
 </p>
 
 A web platform designed to connect students and professors within the Computer Science and Information Technology (CSIT) department of Naresuan University. This project facilitates the posting of part-time jobs, internships, and project opportunities, allowing students to gain practical experience and professors to find capable assistants.
